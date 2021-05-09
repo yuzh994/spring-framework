@@ -114,6 +114,10 @@ import org.springframework.lang.Nullable;
  * @see DisposableBean#destroy
  * @see org.springframework.beans.factory.support.RootBeanDefinition#getDestroyMethodName
  */
+
+/**
+ * yuzh的分支 frist code
+ */
 public interface BeanFactory {
 
 	/**
