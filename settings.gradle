@@ -1,8 +1,8 @@
 pluginManagement {
-	repositories {
-		gradlePluginPortal()
-		maven { url 'https://repo.spring.io/plugins-release' }
-	}
+    repositories {
+        gradlePluginPortal()
+        maven { url 'https://repo.spring.io/plugins-release' }
+    }
 }
 apply from: "$rootDir/gradle/build-cache-settings.gradle"
 
@@ -33,6 +33,8 @@ include "framework-bom"
 include "integration-tests"
 
 rootProject.name = "spring"
-rootProject.children.each {project ->
-	project.buildFileName = "${project.name}.gradle"
+rootProject.children.each { project ->
+    project.buildFileName = "${project.name}.gradle"
 }
+include 'spring-yuzh'
+
