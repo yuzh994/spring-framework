@@ -1,4 +1,4 @@
-package differ.yuzh;
+package com.yuzh;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2021/5/12 17:09
  */
 @Configuration
-@ComponentScan("com.shadow")
+@ComponentScan("com.yuzh")
 //@MapperScan("com.shadow.dao")
 public class Appconfig {
 }
