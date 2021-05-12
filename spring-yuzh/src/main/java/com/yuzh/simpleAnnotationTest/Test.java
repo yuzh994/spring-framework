@@ -1,4 +1,4 @@
-package com.yuzh.AnnotationTest;
+package com.yuzh.simpleAnnotationTest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
