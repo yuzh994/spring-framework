@@ -12,7 +12,7 @@ public class DyAopTest {
 	public static void main(String[] args) {
 		//生产动态代理对象
 		IMemberDao iMemberDao = (IMemberDao)Proxy.newProxyInstance(IMemberDao.class.getClassLoader(),
-				IMemberDao.class.getInterfaces(),
+				MemberDaoImpl.class.getInterfaces(),
 				new MemberInvocationHandler(new MemberDaoImpl()));
 		String result = iMemberDao.getMember(1l);
 		log.info("返回结果{}",result);

@@ -18,10 +18,9 @@ public class MemberInvocationHandler implements InvocationHandler {
 
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
-		log.info("befer----------");
+		log.info("begin----------");
 		Object invoke = method.invoke(target, args);
-		log.info("after----------");
+		log.info("end----------");
 		return invoke;
 	}
 }
