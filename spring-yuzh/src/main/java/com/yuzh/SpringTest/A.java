@@ -1,4 +1,4 @@
-package com.yuzh;
+package com.yuzh.SpringTest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,5 +1,6 @@
-package com.yuzh;
+package com.yuzh.SpringTest;
 
+import com.yuzh.SpringTest.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
