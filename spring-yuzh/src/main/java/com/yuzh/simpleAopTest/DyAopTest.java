@@ -14,8 +14,9 @@ public class DyAopTest {
 		IMemberDao iMemberDao = (IMemberDao)Proxy.newProxyInstance(IMemberDao.class.getClassLoader(),
 				MemberDaoImpl.class.getInterfaces(),
 				new MemberInvocationHandler(new MemberDaoImpl()));
-		String result = iMemberDao.getMember(1l);
-		log.info("返回结果{}",result);
+		iMemberDao.getMember(1l);
+		String clazzName = iMemberDao.getClass().getName();
+		log.info("clazzName:{}",clazzName);
 
 	}
 }
