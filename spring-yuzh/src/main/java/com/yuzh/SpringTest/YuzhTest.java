@@ -1,6 +1,7 @@
 package com.yuzh.SpringTest;
 
 
+import com.yuzh.app.Appconfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

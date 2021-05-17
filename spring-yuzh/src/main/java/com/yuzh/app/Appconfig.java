@@ -1,7 +1,11 @@
-package com.yuzh.SpringTest;
+package com.yuzh.app;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import javax.sql.DataSource;
 
 /**
  * @author yuzh
@@ -9,6 +13,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ComponentScan("com.yuzh")
-//@MapperScan("com.shadow.dao")
 public class Appconfig {
+
 }
