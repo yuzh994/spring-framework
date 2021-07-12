@@ -433,7 +433,9 @@ public class BeanDefinitionParserDelegate {
 		if (containingBean == null) {
 			checkNameUniqueness(beanName, aliases, ele);
 		}
-
+		/**
+		 * 创建beanDefinition 对象
+		 */
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) {
@@ -512,15 +514,25 @@ public class BeanDefinitionParserDelegate {
 		}
 
 		try {
+			/**
+			 * 创建 BeanDefinition 对象
+			 */
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
 
+			/**
+			 * 解析bean 标签中的属性
+			 */
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
+
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
 
 			parseMetaElements(ele, bd);
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
 
+			/**
+			 * 解析构造函数标签
+			 */
 			parseConstructorArgElements(ele, bd);
 			parsePropertyElements(ele, bd);
 			parseQualifierElements(ele, bd);
