@@ -115,7 +115,11 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 	@Override
 	@Nullable
 	public NamespaceHandler resolve(String namespaceUri) {
+		/**
+		 * 获取所有spring jar包中的 /MATE-INF/spring.handlers 中的映射关系
+		 */
 		Map<String, Object> handlerMappings = getHandlerMappings();
+
 		Object handlerOrClassName = handlerMappings.get(namespaceUri);
 		if (handlerOrClassName == null) {
 			return null;
@@ -132,7 +136,13 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 							"] does not implement the [" + NamespaceHandler.class.getName() + "] interface");
 				}
 				NamespaceHandler namespaceHandler = (NamespaceHandler) BeanUtils.instantiateClass(handlerClass);
+				/**
+				 * 注册 自定义标签 子标签的解析类
+				 * 初始化子标签解析类 放入 NamespaceHandlerSupport 的 Map<String, BeanDefinitionParser> parsers中
+				 后面解析时使用
+				 **/
 				namespaceHandler.init();
+
 				handlerMappings.put(namespaceUri, namespaceHandler);
 				return namespaceHandler;
 			}
@@ -160,11 +170,17 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 						logger.trace("Loading NamespaceHandler mappings from [" + this.handlerMappingsLocation + "]");
 					}
 					try {
+						/**
+						 * 加载 META/Spring.handlers 文件的过程
+						 */
 						Properties mappings =
 								PropertiesLoaderUtils.loadAllProperties(this.handlerMappingsLocation, this.classLoader);
 						if (logger.isTraceEnabled()) {
 							logger.trace("Loaded NamespaceHandler mappings: " + mappings);
 						}
+						/**
+						 * 所有 META/Spring.handlers 文件里面的内容 建立关系
+						 */
 						handlerMappings = new ConcurrentHashMap<>(mappings.size());
 						CollectionUtils.mergePropertiesIntoMap(mappings, handlerMappings);
 						this.handlerMappings = handlerMappings;

@@ -644,6 +644,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		 * 1.核心方法 必须读
 		 */
 		refreshBeanFactory();
+
 		return getBeanFactory();
 	}
 

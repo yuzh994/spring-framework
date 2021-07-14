@@ -520,21 +520,37 @@ public class BeanDefinitionParserDelegate {
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
 
 			/**
-			 * 解析bean 标签中的属性
+			 * 解析bean 标签中的属性，并把解析出来的属性设置到 BeanDefinition对象中
 			 */
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
 
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
 
+			/**
+			 * 解析bean 中的 meta 标签 可以不可
+			 */
 			parseMetaElements(ele, bd);
+			/**
+			 * 解析bean 中的 lookup-method标签 可以不看
+			 */
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
+
+			/**
+			 * 解析bean 中的 replaced-method标签 可以不看
+			 */
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
 
 			/**
 			 * 解析构造函数标签
 			 */
 			parseConstructorArgElements(ele, bd);
+
+			/**
+			 *
+			 */
 			parsePropertyElements(ele, bd);
+
+
 			parseQualifierElements(ele, bd);
 
 			bd.setResource(this.readerContext.getResource());
@@ -1391,11 +1407,18 @@ public class BeanDefinitionParserDelegate {
 	 */
 	@Nullable
 	public BeanDefinition parseCustomElement(Element ele, @Nullable BeanDefinition containingBd) {
+		/**
+		 * 获取 标签头 namespaceUri
+		 */
 		String namespaceUri = getNamespaceURI(ele);
 		if (namespaceUri == null) {
 			return null;
 		}
+		/**
+		 * 根据 namespaceUri 获取命名空间处理类
+		 */
 		NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);
+
 		if (handler == null) {
 			error("Unable to locate Spring NamespaceHandler for XML schema namespace [" + namespaceUri + "]", ele);
 			return null;

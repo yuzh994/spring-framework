@@ -186,7 +186,12 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 					}
 					else {
 						/**
-						 * 自定义标签解析
+						 * 自定义标签解析 流程
+						 * 1.根据当前解析的标签头信息找到对应的 namespaceUri
+						 * 2.加载所有jar包下的/MATE-INF/spring.handlers文件。并建立映射关系
+						 * 3.根据 namespaceUri从映射中找到对应的 实现了 NamespaceHandler接口的处理类
+						 * 4.调用类的 init方法，init方法是 注册了各种自定义子标签的解析类
+						 * 5.根据namespaceUri找到对应的解析类，然后调用paser方法完成标签解析
 						 */
 						delegate.parseCustomElement(ele);
 					}
