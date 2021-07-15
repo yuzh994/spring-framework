@@ -312,6 +312,9 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 			return addCandidateComponentsFromIndex(this.componentsIndex, basePackage);
 		}
 		else {
+			/**
+			 * 扫描候选组件的类路径
+			 */
 			return scanCandidateComponents(basePackage);
 		}
 	}
@@ -417,7 +420,11 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		try {
 			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
 					resolveBasePackage(basePackage) + '/' + this.resourcePattern;
+			/**
+			 * 这里递归找文件 PathMatchingResourcePatternResolver
+			 */
 			Resource[] resources = getResourcePatternResolver().getResources(packageSearchPath);
+
 			boolean traceEnabled = logger.isTraceEnabled();
 			boolean debugEnabled = logger.isDebugEnabled();
 			for (Resource resource : resources) {
@@ -426,8 +433,15 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 				}
 				if (resource.isReadable()) {
 					try {
+						/**
+						 * 包装了类的基本信息的对象 ，拿到当前类的所有注解
+						 */
 						MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
+
 						if (isCandidateComponent(metadataReader)) {
+							/**
+							 *ScannedGenericBeanDefinition bean扫描的时候出现的BeanDefinition
+							 */
 							ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
 							sbd.setSource(resource);
 							if (isCandidateComponent(sbd)) {
@@ -491,6 +505,10 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 				return false;
 			}
 		}
+
+		/**
+		 * 如果采用的默认的扫描方式，则有 includeFilters里有Compoent注解
+		 */
 		for (TypeFilter tf : this.includeFilters) {
 			if (tf.match(metadataReader, getMetadataReaderFactory())) {
 				return isConditionMatch(metadataReader);

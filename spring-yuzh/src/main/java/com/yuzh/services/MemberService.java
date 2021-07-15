@@ -1,6 +1,5 @@
 package com.yuzh.services;
 
-import com.yuzh.SpringTest.YuzhTest;
 import com.yuzh.dao.IndexDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +13,12 @@ import java.util.Map;
 public class MemberService {
 	public static final Logger log = LoggerFactory.getLogger(MemberService.class);
 
-	@Autowired
-	IndexDao indexDao;
+//	@Autowired
+//	IndexDao indexDao;
 
 	public List<Map<String, Object>>getMember(){
-		List<Map<String, Object>> list = indexDao.list();
-		return list;
+//		List<Map<String, Object>> list = indexDao.list();
+//		return list;
+		return null;
 	}
 }
