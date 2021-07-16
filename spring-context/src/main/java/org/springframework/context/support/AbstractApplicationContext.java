@@ -39,6 +39,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.beans.support.ResourceEditorRegistrar;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -524,9 +525,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			 * 1.创建beanFactory 对象
 			 * 2.解析Spring XML文件
 			 * 3.把解析出来的XML标签封装成BeanDefinition对象
+			 * 4.放入 beanFactory
 			 */
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
+			/**
+			 * 给 BeanFactory设置一些属性值
+			 */
 			// Prepare the bean factory for use in this context.
 			prepareBeanFactory(beanFactory);
 
@@ -534,6 +539,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Allows post-processing of the bean factory in context subclasses.
 				postProcessBeanFactory(beanFactory);
 
+				/**
+				 * BeanDefinitionRegistryPostProcessor
+				 * 定义在实例化之前，可以完成对BeanDefinition的修改和注册 BeanDefinition 增删改查
+				 *
+				 * BeanFactoryPostProcessor
+				 * 完成对这两个接口的调用
+				 */
 				// Invoke factory processors registered as beans in the context.
 				invokeBeanFactoryPostProcessors(beanFactory);
 
@@ -553,6 +565,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
+				/**
+				 * 核心的实例化流程
+				 */
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.

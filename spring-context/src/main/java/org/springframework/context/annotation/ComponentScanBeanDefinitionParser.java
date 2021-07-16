@@ -104,10 +104,11 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 		 * 2.递归找.class文件
 		 * 3.判断.class文件里是非有注解 ，默认 Component
 		 * 4.变成beanDefinition
+		 * 5.并组成到 beanfactory中
 		 */
 		Set<BeanDefinitionHolder> beanDefinitions = scanner.doScan(basePackages);
-		registerComponents(parserContext.getReaderContext(), beanDefinitions, element);
 
+		registerComponents(parserContext.getReaderContext(), beanDefinitions, element);
 		return null;
 	}
 
@@ -168,6 +169,9 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 		}
 		if (annotationConfig) {
 			Set<BeanDefinitionHolder> processorDefinitions =
+					/**
+					 * 注册主键核心代码
+					 */
 					AnnotationConfigUtils.registerAnnotationConfigProcessors(readerContext.getRegistry(), source);
 			for (BeanDefinitionHolder processorDefinition : processorDefinitions) {
 				compositeDef.addNestedComponent(new BeanComponentDefinition(processorDefinition));
