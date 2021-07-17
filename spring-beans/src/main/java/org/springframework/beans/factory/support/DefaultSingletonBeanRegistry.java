@@ -119,6 +119,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		Assert.notNull(beanName, "Bean name must not be null");
 		Assert.notNull(singletonObject, "Singleton object must not be null");
 		synchronized (this.singletonObjects) {
+			/**
+			 * singletonObjects
+			 * 1.单例池、一级缓存
+			 */
 			Object oldObject = this.singletonObjects.get(beanName);
 			if (oldObject != null) {
 				throw new IllegalStateException("Could not register object [" + singletonObject +
@@ -179,20 +183,46 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 		// Quick check for existing instance without full singleton lock
+		/**
+		 * 根据beanName 从缓存中拿实例
+		 * 先从一级缓存中拿
+		 */
 		Object singletonObject = this.singletonObjects.get(beanName);
+		/**
+		 * 如果bean正在创建，还没有创建完成，其实就是堆内存有了，属性还没有DI注入
+		 */
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
 			singletonObject = this.earlySingletonObjects.get(beanName);
 			if (singletonObject == null && allowEarlyReference) {
 				synchronized (this.singletonObjects) {
 					// Consistent creation of early reference within full singleton lock
+					/**
+					 * 二级缓存
+					 */
 					singletonObject = this.singletonObjects.get(beanName);
+
 					if (singletonObject == null) {
 						singletonObject = this.earlySingletonObjects.get(beanName);
+						/**
+						 * 如果还拿不到，并且允许bean提前暴露
+						 */
 						if (singletonObject == null) {
+							/**
+							 * 从三级缓存中 ，拿到对象工厂
+							 */
 							ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 							if (singletonFactory != null) {
+								/**
+								 * 从工厂中拿到对象
+								 */
 								singletonObject = singletonFactory.getObject();
+								/**
+								 * 升级为二级缓存
+								 */
 								this.earlySingletonObjects.put(beanName, singletonObject);
+								/**
+								 * 删掉三级缓存
+								 */
 								this.singletonFactories.remove(beanName);
 							}
 						}

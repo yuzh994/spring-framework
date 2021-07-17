@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
-@MyService
+
 public class MemberServiceV2 {
 	public static final Logger log = LoggerFactory.getLogger(MemberServiceV2.class);
 

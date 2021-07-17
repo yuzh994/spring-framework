@@ -12,6 +12,6 @@
 
 	<context:component-scan base-package="com.yuzh"/>
 
-	<bean id="apple" class=" com.yuzh.SpringTest.Apple" ></bean>
+
 
 </beans>
