@@ -197,16 +197,26 @@ class ConstructorResolver {
 				minNrOfArgs = resolveConstructorArguments(beanName, mbd, bw, cargs, resolvedValues);
 			}
 
+			/**
+			 * 构造函数排序，public 并且参数越多放在前面
+			 */
 			AutowireUtils.sortConstructors(candidates);
+
 			int minTypeDiffWeight = Integer.MAX_VALUE;
 			Set<Constructor<?>> ambiguousConstructors = null;
 			LinkedList<UnsatisfiedDependencyException> causes = null;
 
+			/**
+			 * 构造函数的 for循环
+			 */
 			for (Constructor<?> candidate : candidates) {
 				int parameterCount = candidate.getParameterCount();
 
+				/**
+				 * 如果之前有一个构造器被处理过了，则后面的构造器就不用处理了
+				 */
 				if (constructorToUse != null && argsToUse != null && argsToUse.length > parameterCount) {
-					// Already found greedy constructor that can be satisfied ->
+					// Alread2y found greedy constructor that can be satisfied ->
 					// do not look any further, there are only less greedy constructors left.
 					break;
 				}
@@ -225,6 +235,9 @@ class ConstructorResolver {
 								paramNames = pnd.getParameterNames(candidate);
 							}
 						}
+						/**
+						 * 这里会触发构造函数中的 getBean 操作，会实例化参数的值
+						 */
 						argsHolder = createArgumentArray(beanName, mbd, resolvedValues, bw, paramTypes, paramNames,
 								getUserDeclaredConstructor(candidate), autowiring, candidates.length == 1);
 					}
@@ -292,6 +305,13 @@ class ConstructorResolver {
 		}
 
 		Assert.state(argsToUse != null, "Unresolved constructor arguments");
+		/**
+		 * instantiate()：反射实例化
+		 * beanName： 需要实例化 的 beanName
+		 * mbd： beandefinition对象
+		 * constructorToUse： 推断出的构造方法
+		 * argsToUse：入参的值
+		 */
 		bw.setBeanInstance(instantiate(beanName, mbd, constructorToUse, argsToUse));
 		return bw;
 	}
@@ -307,6 +327,9 @@ class ConstructorResolver {
 						this.beanFactory.getAccessControlContext());
 			}
 			else {
+				/**
+				 * 反射实例化
+				 */
 				return strategy.instantiate(mbd, beanName, this.beanFactory, constructorToUse, argsToUse);
 			}
 		}
@@ -392,7 +415,9 @@ class ConstructorResolver {
 	 */
 	public BeanWrapper instantiateUsingFactoryMethod(
 			String beanName, RootBeanDefinition mbd, @Nullable Object[] explicitArgs) {
-
+		/**
+		 * 对创建好的 bean 再次封装
+		 */
 		BeanWrapperImpl bw = new BeanWrapperImpl();
 		this.beanFactory.initBeanWrapper(bw);
 
@@ -400,6 +425,9 @@ class ConstructorResolver {
 		Class<?> factoryClass;
 		boolean isStatic;
 
+		/**
+		 * 获取 FactoryBean 的名称
+		 */
 		String factoryBeanName = mbd.getFactoryBeanName();
 		if (factoryBeanName != null) {
 			if (factoryBeanName.equals(beanName)) {
@@ -412,6 +440,9 @@ class ConstructorResolver {
 			}
 			this.beanFactory.registerDependentBean(factoryBeanName, beanName);
 			factoryClass = factoryBean.getClass();
+			/**
+			 * factory-menthod 要是静态方法
+			 */
 			isStatic = false;
 		}
 		else {
@@ -420,6 +451,9 @@ class ConstructorResolver {
 				throw new BeanDefinitionStoreException(mbd.getResourceDescription(), beanName,
 						"bean definition declares neither a bean class nor a factory-bean reference");
 			}
+			/**
+			 * 如果factory-bean 没有配置，则必须配置  class 属性，并且factory-method 为静态方法
+			 */
 			factoryBean = null;
 			factoryClass = mbd.getBeanClass();
 			isStatic = true;
@@ -465,8 +499,14 @@ class ConstructorResolver {
 			}
 			if (candidates == null) {
 				candidates = new ArrayList<>();
+				/**
+				 *拿到Fatory所有的方法
+				 */
 				Method[] rawCandidates = getCandidateMethods(factoryClass, mbd);
 				for (Method candidate : rawCandidates) {
+					/**
+					 * 匹配方法，并且是静态方法
+					 */
 					if (Modifier.isStatic(candidate.getModifiers()) == isStatic && mbd.isFactoryMethod(candidate)) {
 						candidates.add(candidate);
 					}
@@ -482,6 +522,9 @@ class ConstructorResolver {
 						mbd.constructorArgumentsResolved = true;
 						mbd.resolvedConstructorArguments = EMPTY_ARGS;
 					}
+					/**
+					 * 反射调用 factoryBean 中的 Factorymethod ,再封装到 bw中
+					 */
 					bw.setBeanInstance(instantiate(beanName, mbd, factoryBean, uniqueCandidate, EMPTY_ARGS));
 					return bw;
 				}

@@ -583,7 +583,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Instantiate all remaining (non-lazy-init) singletons.
 				/**
-				 * 核心的实例化流程
+				 * 核心实例化流程
 				 * 1.bean 的实例化过程
 				 * 2.ioc
 				 * 3.注解支持
@@ -935,7 +935,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// Instantiate all remaining (non-lazy-init) singletons.
 		/**
-		 * 重点方法
+		 * 重点方法 预实例化单例
 		 */
 		beanFactory.preInstantiateSingletons();
 	}
