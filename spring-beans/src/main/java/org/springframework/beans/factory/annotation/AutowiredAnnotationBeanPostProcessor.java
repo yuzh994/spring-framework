@@ -403,6 +403,9 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
+		/**
+		 * 返回有注解的属性和方法
+		 */
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
 		try {
 			metadata.inject(bean, beanName, pvs);
@@ -465,6 +468,9 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 					 * 放入 injectionMetadataCache
 					 */
 					metadata = buildAutowiringMetadata(clazz);
+					/**
+					 * 放入缓存
+					 */
 					this.injectionMetadataCache.put(cacheKey, metadata);
 				}
 			}
@@ -497,6 +503,9 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 				}
 			});
 
+			/**
+			 * 寻找方法上面的@Autowire 并封装成对象
+			 */
 			ReflectionUtils.doWithLocalMethods(targetClass, method -> {
 				Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
 				if (!BridgeMethodResolver.isVisibilityBridgeMethodPair(method, bridgedMethod)) {
@@ -656,6 +665,9 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 				value = resolveFieldValue(field, bean, beanName);
 			}
 			if (value != null) {
+				/**
+				 * 通过反射 完成依赖注入
+				 */
 				ReflectionUtils.makeAccessible(field);
 				field.set(bean, value);
 			}

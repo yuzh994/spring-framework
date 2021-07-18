@@ -195,8 +195,17 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	 * respectively.
 	 */
 	public CommonAnnotationBeanPostProcessor() {
+		/**
+		 * 设置两个注解
+		 */
 		setOrder(Ordered.LOWEST_PRECEDENCE - 3);
+		/**
+		 * bean 实例化以后调用的方法
+		 */
 		setInitAnnotationType(PostConstruct.class);
+		/**
+		 * 在容器销毁时调用
+		 */
 		setDestroyAnnotationType(PreDestroy.class);
 		ignoreResourceType("javax.xml.ws.WebServiceContext");
 	}

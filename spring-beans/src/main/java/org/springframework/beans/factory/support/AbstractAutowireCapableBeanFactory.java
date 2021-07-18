@@ -577,7 +577,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					 * CommonAnnotationBeanPostProcessor支持了 @PostConstruct @PreDestroy @Resource
 					 * AutowiredAnnotationBeanPostProcessor  @Autowire @Value
 					 *
-					 * 对类的装配过程
+					 * 对类注解 的装配过程
 					 */
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
@@ -591,6 +591,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
+		/**
+		 * 循环依赖相关
+		 */
 		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences &&
 				isSingletonCurrentlyInCreation(beanName));
 		if (earlySingletonExposure) {
@@ -604,7 +607,17 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Initialize the bean instance.
 		Object exposedObject = bean;
 		try {
+			/**
+			 * IOC DI 依赖注入的核心方法
+			 */
 			populateBean(beanName, mbd, instanceWrapper);
+			/**
+			 * bean 实例化+ioc依赖注入完成后的调用
+			 * 1.调用 Aware 接口
+			 * 2.调用 @PostConStruct注解的方法，这里通过实现BeanPostProcesser接口完成该功能实现
+			 * 3.调用实现了Initializing接口的类中的 AfterPropertiesSet方法，调用 init-method中配置的方法
+			 * 4.代理类创建，用BeanPostProcesser接口来完成代理实例的创建
+			 */
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -1426,6 +1439,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Give any InstantiationAwareBeanPostProcessors the opportunity to modify the
 		// state of the bean before properties are set. This can be used, for example,
 		// to support styles of field injection.
+		/**
+		 *写一个接口 InstantiationAwareBeanPostProcessor ，postProcessAfterInstantiation()方法返回等于 true 才能往下走
+		 * 可以让所有类都不能依赖注入
+		 */
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			for (BeanPostProcessor bp : getBeanPostProcessors()) {
 				if (bp instanceof InstantiationAwareBeanPostProcessor) {
@@ -1457,6 +1474,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		boolean needsDepCheck = (mbd.getDependencyCheck() != AbstractBeanDefinition.DEPENDENCY_CHECK_NONE);
 
 		PropertyDescriptor[] filteredPds = null;
+		/**
+		 * 重点看这个 if
+		 */
 		if (hasInstAwareBpps) {
 			if (pvs == null) {
 				pvs = mbd.getPropertyValues();
@@ -1464,6 +1484,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			for (BeanPostProcessor bp : getBeanPostProcessors()) {
 				if (bp instanceof InstantiationAwareBeanPostProcessor) {
 					InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
+					/**
+					 * 依赖注入过程，@Autowire 的支持 ，引用类型的依赖注入会出发 getBean操作
+					 */
 					PropertyValues pvsToUse = ibp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);
 					if (pvsToUse == null) {
 						if (filteredPds == null) {
@@ -1825,16 +1848,36 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}, getAccessControlContext());
 		}
 		else {
+			/**
+			 * 调用 Aware接口
+			 */
 			invokeAwareMethods(beanName, bean);
 		}
 
 		Object wrappedBean = bean;
 		if (mbd == null || !mbd.isSynthetic()) {
+			/**
+			 * 对类中某些特殊的方法的调用 ，比如@PostConstruct Aware接口
+			 * ApplicationContextAwareProcessor 对Aware接口的支撑 如EnvironmentAware EmbeddedValueResolverAware
+			 * 		  ResourceLoaderAware ApplicationEventPublisherAware
+			 * 		  MessageSourceAware ApplicationContextAware
+			 *
+			 * ImportAwareBeanPostProcessor对InportAware的支撑
+			 */
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
 		try {
+			/**
+			 * InitializingBean 接口，afterPropertiesSet ,init-method属性的调用
+			 */
 			invokeInitMethods(beanName, wrappedBean, mbd);
+
+			/**
+			 * 调用时序
+			 * @PostConstruct > InitializingBean 接口 > XML 配置了 init-method
+			 * 都可以在bean 初始化之后做一些操作
+			 */
 		}
 		catch (Throwable ex) {
 			throw new BeanCreationException(
@@ -1842,6 +1885,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					beanName, "Invocation of init method failed", ex);
 		}
 		if (mbd == null || !mbd.isSynthetic()) {
+			/**
+			 *这个地方可能会生成代理实例，AOP的入口
+			 */
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 
@@ -1902,6 +1948,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (mbd != null && bean.getClass() != NullBean.class) {
+			/**
+			 * 从beanDefinition中拿到initMethodName ，直接调用
+			 */
 			String initMethodName = mbd.getInitMethodName();
 			if (StringUtils.hasLength(initMethodName) &&
 					!(isInitializingBean && "afterPropertiesSet".equals(initMethodName)) &&
