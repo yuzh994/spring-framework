@@ -140,9 +140,21 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 */
 	protected void addSingleton(String beanName, Object singletonObject) {
 		synchronized (this.singletonObjects) {
+			/**
+			 * 单例池、一级缓存
+			 */
 			this.singletonObjects.put(beanName, singletonObject);
+			/**
+			 * 删除三级缓存
+			 */
 			this.singletonFactories.remove(beanName);
+			/**
+			 * 删除二级缓存
+			 */
 			this.earlySingletonObjects.remove(beanName);
+			/**
+			 * 统计
+			 */
 			this.registeredSingletons.add(beanName);
 		}
 	}
@@ -158,8 +170,18 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	protected void addSingletonFactory(String beanName, ObjectFactory<?> singletonFactory) {
 		Assert.notNull(singletonFactory, "Singleton factory must not be null");
 		synchronized (this.singletonObjects) {
+			/**
+			 * 如果一级缓存不存在
+			 */
 			if (!this.singletonObjects.containsKey(beanName)) {
+				/**
+				 * 设置 三级缓存
+				 * 设置了一个匿名函数
+				 */
 				this.singletonFactories.put(beanName, singletonFactory);
+				/**
+				 * 删除二级缓存
+				 */
 				this.earlySingletonObjects.remove(beanName);
 				this.registeredSingletons.add(beanName);
 			}
@@ -186,6 +208,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		/**
 		 * 根据beanName 从缓存中拿实例
 		 * 先从一级缓存中拿
+		 * 一级缓存：实例化 初始化完成的bean
 		 */
 		Object singletonObject = this.singletonObjects.get(beanName);
 		/**
@@ -198,6 +221,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					// Consistent creation of early reference within full singleton lock
 					/**
 					 * 二级缓存
+					 *
 					 */
 					singletonObject = this.singletonObjects.get(beanName);
 
@@ -269,6 +293,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				try {
 					/**
 					 * 函数式接口，这里回调到 外面的 getObject()
+					 * 如果这里有返回值，说明这个bean 已经结束创建
 					 */
 					singletonObject = singletonFactory.getObject();
 					newSingleton = true;
@@ -293,9 +318,15 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					if (recordSuppressedExceptions) {
 						this.suppressedExceptions = null;
 					}
+					/**
+					 * bean 创建成功之后 把 beanName移除singletonsCurrentlyInCreation
+					 */
 					afterSingletonCreation(beanName);
 				}
 				if (newSingleton) {
+					/**
+					 * 创建对象成功时，把对象加入 一级缓存
+					 */
 					addSingleton(beanName, singletonObject);
 				}
 			}

@@ -593,6 +593,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
 		/**
 		 * 循环依赖相关
+		 * 对象是单例的，并且运行循环依赖 并且
+		 * isSingletonCurrentlyInCreation（）这个bean 正在创建
 		 */
 		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences &&
 				isSingletonCurrentlyInCreation(beanName));
@@ -601,6 +603,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
+			/**
+			 *加入三级缓存
+			 * beanName 和 匿名函数的映射
+			 */
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
@@ -609,6 +615,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		try {
 			/**
 			 * IOC DI 依赖注入的核心方法
+			 *
 			 */
 			populateBean(beanName, mbd, instanceWrapper);
 			/**
@@ -1485,7 +1492,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				if (bp instanceof InstantiationAwareBeanPostProcessor) {
 					InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
 					/**
-					 * 依赖注入过程，@Autowire 的支持 ，引用类型的依赖注入会出发 getBean操作
+					 * 依赖注入过程，@Autowire 的支持 ，引用类型的依赖注入会触发 getBean操作
 					 */
 					PropertyValues pvsToUse = ibp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);
 					if (pvsToUse == null) {
