@@ -513,6 +513,9 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 				result.addAll(doFindPathMatchingJarResources(rootDirResource, rootDirUrl, subPattern));
 			}
 			else {
+				/**
+				 * 递归寻找 .class文件
+				 */
 				result.addAll(doFindPathMatchingFileResources(rootDirResource, subPattern));
 			}
 		}
@@ -732,6 +735,9 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 		if (logger.isTraceEnabled()) {
 			logger.trace("Looking for matching resources in directory tree [" + rootDir.getPath() + "]");
 		}
+		/**
+		 *寻找匹配文件
+		 */
 		Set<File> matchingFiles = retrieveMatchingFiles(rootDir, subPattern);
 		Set<Resource> result = new LinkedHashSet<>(matchingFiles.size());
 		for (File file : matchingFiles) {
@@ -750,6 +756,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 	 * @throws IOException if directory contents could not be retrieved
 	 */
 	protected Set<File> retrieveMatchingFiles(File rootDir, String pattern) throws IOException {
+		//文件是否存在
 		if (!rootDir.exists()) {
 			// Silently skip non-existing directories.
 			if (logger.isDebugEnabled()) {
@@ -771,12 +778,21 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 			}
 			return Collections.emptySet();
 		}
+
+		/**
+		 * 最终要扫描包的路径 例如
+		 * D:/code/spring-framework/spring-yuzh/build/classes/java/main/com/yuzh/services
+		 */
 		String fullPattern = StringUtils.replace(rootDir.getAbsolutePath(), File.separator, "/");
 		if (!pattern.startsWith("/")) {
 			fullPattern += "/";
 		}
 		fullPattern = fullPattern + StringUtils.replace(pattern, File.separator, "/");
 		Set<File> result = new LinkedHashSet<>(8);
+
+		/**
+		 * 递归寻找文件 ，终极核心方法
+		 */
 		doRetrieveMatchingFiles(fullPattern, rootDir, result);
 		return result;
 	}
@@ -795,9 +811,15 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 			logger.trace("Searching directory [" + dir.getAbsolutePath() +
 					"] for files matching pattern [" + fullPattern + "]");
 		}
+		/**
+		 * listDirectory 拿到当前路径 下所有的子路径
+		 */
 		for (File content : listDirectory(dir)) {
 			String currPath = StringUtils.replace(content.getAbsolutePath(), File.separator, "/");
 			if (content.isDirectory() && getPathMatcher().matchStart(fullPattern, currPath + "/")) {
+				/**
+				 * 如果是文件则递归查找
+				 */
 				if (!content.canRead()) {
 					if (logger.isDebugEnabled()) {
 						logger.debug("Skipping subdirectory [" + dir.getAbsolutePath() +
@@ -808,6 +830,9 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 					doRetrieveMatchingFiles(fullPattern, content, result);
 				}
 			}
+			/**
+			 * 如果是一个文件，则加入容器
+			 */
 			if (getPathMatcher().match(fullPattern, currPath)) {
 				result.add(content);
 			}

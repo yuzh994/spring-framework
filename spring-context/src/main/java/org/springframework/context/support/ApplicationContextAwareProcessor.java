@@ -83,7 +83,12 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 				bean instanceof MessageSourceAware || bean instanceof ApplicationContextAware)){
 			return bean;
 		}
-
+		/**
+		 * ¶Ô EnvironmentAware EmbeddedValueResolverAware
+		 * ResourceLoaderAware ApplicationEventPublisherAware
+		 * MessageSourceAware ApplicationContextAware
+		 * µÄÖ§³Å
+		 */
 		AccessControlContext acc = null;
 
 		if (System.getSecurityManager() != null) {

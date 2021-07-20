@@ -80,21 +80,41 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 	@Override
 	@Nullable
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
+		/**
+		 * 获取basePackge属性
+		 */
 		String basePackage = element.getAttribute(BASE_PACKAGE_ATTRIBUTE);
 		basePackage = parserContext.getReaderContext().getEnvironment().resolvePlaceholders(basePackage);
+		/**
+		 * 用逗号隔开
+		 */
 		String[] basePackages = StringUtils.tokenizeToStringArray(basePackage,
 				ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
 
 		// Actually scan for bean definitions and register them.
+		/**
+		 * 创建注册扫描器
+		 */
 		ClassPathBeanDefinitionScanner scanner = configureScanner(parserContext, element);
+		/**
+		 *
+		 * 扫描并把扫描的类封装成beanDefinition对象  核心方法
+		 *
+		 * 1.去扫描基本包路径，找.class
+		 * 2.递归找.class文件
+		 * 3.判断.class文件里是非有注解 ，默认 Component
+		 * 4.变成beanDefinition
+		 * 5.并组成到 beanfactory中
+		 */
 		Set<BeanDefinitionHolder> beanDefinitions = scanner.doScan(basePackages);
-		registerComponents(parserContext.getReaderContext(), beanDefinitions, element);
 
+		registerComponents(parserContext.getReaderContext(), beanDefinitions, element);
 		return null;
 	}
 
 	protected ClassPathBeanDefinitionScanner configureScanner(ParserContext parserContext, Element element) {
 		boolean useDefaultFilters = true;
+		//是否采用默认的过滤器
 		if (element.hasAttribute(USE_DEFAULT_FILTERS_ATTRIBUTE)) {
 			useDefaultFilters = Boolean.parseBoolean(element.getAttribute(USE_DEFAULT_FILTERS_ATTRIBUTE));
 		}
@@ -149,6 +169,9 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 		}
 		if (annotationConfig) {
 			Set<BeanDefinitionHolder> processorDefinitions =
+					/**
+					 * 注册主键核心代码
+					 */
 					AnnotationConfigUtils.registerAnnotationConfigProcessors(readerContext.getRegistry(), source);
 			for (BeanDefinitionHolder processorDefinition : processorDefinitions) {
 				compositeDef.addNestedComponent(new BeanComponentDefinition(processorDefinition));

@@ -462,6 +462,9 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 		@Override
 		public Object postProcessBeforeInitialization(Object bean, String beanName) {
+			/**
+			 * 对ImportAware 接口的支撑 ，A @Import(B.class) ,B 通过这个ImportAware接口 拿到A所有的注解信息
+			 */
 			if (bean instanceof ImportAware) {
 				ImportRegistry ir = this.beanFactory.getBean(IMPORT_REGISTRY_BEAN_NAME, ImportRegistry.class);
 				AnnotationMetadata importingClass = ir.getImportingClassFor(ClassUtils.getUserClass(bean).getName());

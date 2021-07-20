@@ -152,6 +152,9 @@ public class InitDestroyAnnotationBeanPostProcessor
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+		/**
+		 * 对 @PostConstruct 注解的支撑
+		 */
 		LifecycleMetadata metadata = findLifecycleMetadata(bean.getClass());
 		try {
 			metadata.invokeInitMethods(bean, beanName);

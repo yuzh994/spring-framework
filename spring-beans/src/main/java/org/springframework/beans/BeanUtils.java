@@ -189,6 +189,9 @@ public abstract class BeanUtils {
 				return KotlinDelegate.instantiateClass(ctor, args);
 			}
 			else {
+				/**
+				 * 反射拿到构造函数
+				 */
 				Class<?>[] parameterTypes = ctor.getParameterTypes();
 				Assert.isTrue(args.length <= parameterTypes.length, "Can't specify more arguments than constructor parameters");
 				Object[] argsWithDefaultValues = new Object[args.length];
@@ -201,6 +204,9 @@ public abstract class BeanUtils {
 						argsWithDefaultValues[i] = args[i];
 					}
 				}
+				/**
+				 * 入参传进去
+				 */
 				return ctor.newInstance(argsWithDefaultValues);
 			}
 		}

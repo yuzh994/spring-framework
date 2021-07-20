@@ -114,6 +114,9 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 					return null;
 				});
 			}
+			/**
+			 * 反射实例化
+			 */
 			return BeanUtils.instantiateClass(ctor, args);
 		}
 		else {
@@ -151,6 +154,9 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 			Method priorInvokedFactoryMethod = currentlyInvokedFactoryMethod.get();
 			try {
 				currentlyInvokedFactoryMethod.set(factoryMethod);
+				/**
+				 * 反射调用 factoryBean 中的 Factorymethod
+				 */
 				Object result = factoryMethod.invoke(factoryBean, args);
 				if (result == null) {
 					result = new NullBean();
