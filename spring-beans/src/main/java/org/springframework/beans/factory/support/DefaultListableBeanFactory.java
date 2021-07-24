@@ -883,6 +883,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			 * 非抽象、非懒加载、是单例 ，才会在容器启动的时候实例化
 			 */
 			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
+				/**
+				 * 判断是否实现了 FactoryBean 接口
+				 */
 				if (isFactoryBean(beanName)) {
 					Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
 					if (bean instanceof FactoryBean) {

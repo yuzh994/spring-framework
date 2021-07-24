@@ -108,6 +108,9 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 		 */
 		Set<BeanDefinitionHolder> beanDefinitions = scanner.doScan(basePackages);
 
+		/**
+		 * 注册组件
+		 */
 		registerComponents(parserContext.getReaderContext(), beanDefinitions, element);
 		return null;
 	}

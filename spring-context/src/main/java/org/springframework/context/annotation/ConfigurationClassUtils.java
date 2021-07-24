@@ -91,11 +91,20 @@ abstract class ConfigurationClassUtils {
 		}
 
 		AnnotationMetadata metadata;
+		/**
+		 * 如果是扫描注解产生的BeanDefinition
+		 */
 		if (beanDef instanceof AnnotatedBeanDefinition &&
 				className.equals(((AnnotatedBeanDefinition) beanDef).getMetadata().getClassName())) {
 			// Can reuse the pre-parsed metadata from the given BeanDefinition...
+			/**
+			 * metadata ,类的元数据信息
+			 */
 			metadata = ((AnnotatedBeanDefinition) beanDef).getMetadata();
 		}
+		/**
+		 * 如果是非扫描注解产生的BeanDefinition
+		 */
 		else if (beanDef instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) beanDef).hasBeanClass()) {
 			// Check already loaded Class if present...
 			// since we possibly can't even load the class file for this Class.
@@ -122,11 +131,21 @@ abstract class ConfigurationClassUtils {
 			}
 		}
 
+		/**
+		 * 从 metadata中获取 Configuration注解
+		 *
+		 */
 		Map<String, Object> config = metadata.getAnnotationAttributes(Configuration.class.getName());
 		if (config != null && !Boolean.FALSE.equals(config.get("proxyBeanMethods"))) {
+			/**
+			 * 如果有 Configuration 注解，就是完全匹配标识
+			 */
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
 		}
 		else if (config != null || isConfigurationCandidate(metadata)) {
+			/**
+			 * 如果有@Componet @ComponetScan @Import @ImportResource 或者方法上有@Bean 都是lite匹配
+			 */
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
 		}
 		else {

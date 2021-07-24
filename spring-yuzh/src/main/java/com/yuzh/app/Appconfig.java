@@ -12,7 +12,7 @@ import javax.sql.DataSource;
  * @date 2021/5/12 17:09
  */
 @Configuration
-@ComponentScan("com.yuzh")
+@ComponentScan("com.yuzh.circuar")
 public class Appconfig {
 
 }
