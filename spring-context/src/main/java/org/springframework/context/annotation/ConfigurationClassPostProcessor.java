@@ -227,6 +227,9 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 	/**
 	 * Derive further bean definitions from the configuration classes in the registry.
+	 * 1.完成了扫描
+	 * 2.完成了对配置类的标志
+	 * 3.对@Import的支持
 	 */
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
@@ -351,11 +354,15 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		do {
 			/**
 			 * 解析核心流程 重要程度5
-			 * 其实就是把类上面的特殊注解解析出来 封装成 BeanDefinition
+			 * 其实就是把类上面的特殊注解解析出来  封装成 beanDefinition
+			 * 放入configurationClasses容器
 			 */
 			parser.parse(candidates);
 			parser.validate();
 
+			/**
+			 *拿到 放入configurationClasses容器容器所有的key
+			 */
 			Set<ConfigurationClass> configClasses = new LinkedHashSet<>(parser.getConfigurationClasses());
 			configClasses.removeAll(alreadyParsed);
 
@@ -365,7 +372,13 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 						registry, this.sourceExtractor, this.resourceLoader, this.environment,
 						this.importBeanNameGenerator, parser.getImportRegistry());
 			}
+			/**
+			 *  @Bean @ImportResource  ImportBeanDefinitionRegistrar 具体处理逻辑
+			 */
 			this.reader.loadBeanDefinitions(configClasses);
+			/**
+			 * 已经完成解析的类
+			 */
 			alreadyParsed.addAll(configClasses);
 
 			candidates.clear();

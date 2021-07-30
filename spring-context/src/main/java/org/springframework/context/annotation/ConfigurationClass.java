@@ -48,17 +48,17 @@ import org.springframework.util.ClassUtils;
  */
 
 /**
- * Ò»¸ö ConfigurationClass ¶ÔÏó ´ú±íÒ»¸öÀà
+ * æ”¶é›†è§£ææ³¨è§£çš„ç±»
  */
 final class ConfigurationClass {
 
 	/**
-	 * ÀàµÄ»ù±¾ÔªĞÅÏ¢£¬°üÀ¨×¢½â¡¢Àà¡¢·½·¨µÈĞÅÏ¢
+	 * ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Ôªï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½â¡¢ï¿½à¡¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 	 */
 	private final AnnotationMetadata metadata;
 
 	/**
-	 * ÀàµÄ ÎÄ¼şÁ÷·â×°
+	 * ï¿½ï¿½ï¿½ ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½×°
 	 */
 	private final Resource resource;
 
@@ -66,12 +66,12 @@ final class ConfigurationClass {
 	private String beanName;
 
 	/**
-	 * Íâ²¿Àà£¬ ÓÉÄ³¸öÀàÒıÈë½øÀ´µÄ
+	 * ï¿½â²¿ï¿½à£¬ ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
 	private final Set<ConfigurationClass> importedBy = new LinkedHashSet<>(1);
 
 	/**
-	 * Èç¹ûÓĞ @BeanµÄ·½·¨£¬Ôò·Åµ½Õâ¸öÈİÆ÷ÖĞ
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ @Beanï¿½Ä·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
 	private final Set<BeanMethod> beanMethods = new LinkedHashSet<>();
 
