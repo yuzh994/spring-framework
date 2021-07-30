@@ -84,6 +84,13 @@ import org.springframework.util.ClassUtils;
  * @author Sam Brannen
  * @since 3.0
  */
+
+/**
+ * 实现BeanDefinitionRegistryPostProcessor 接口，操作BeanDefinition 并且加入到Registry
+ *
+ * PriorityOrdered 排序接口 ，最低的优先级
+ *
+ */
 public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPostProcessor,
 		PriorityOrdered, ResourceLoaderAware, BeanClassLoaderAware, EnvironmentAware {
 
@@ -234,6 +241,9 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 		this.registriesPostProcessed.add(registryId);
 
+		/**
+		 * 核心逻辑
+		 */
 		processConfigBeanDefinitions(registry);
 	}
 
@@ -265,26 +275,42 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 */
 	public void processConfigBeanDefinitions(BeanDefinitionRegistry registry) {
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>();
+
+		/**
+		 * 拿到所有的 BeanNames
+		 */
 		String[] candidateNames = registry.getBeanDefinitionNames();
 
 		for (String beanName : candidateNames) {
 			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
+			/**
+			 * 如果有该标识就不再处理
+			 */
 			if (beanDef.getAttribute(ConfigurationClassUtils.CONFIGURATION_CLASS_ATTRIBUTE) != null) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Bean definition has already been processed as a configuration class: " + beanDef);
 				}
 			}
+			/**
+			 * 判断是否是候选的需要处理的BeanDefiniton，如果是则放入到容器configCandidates
+			 */
 			else if (ConfigurationClassUtils.checkConfigurationClassCandidate(beanDef, this.metadataReaderFactory)) {
 				configCandidates.add(new BeanDefinitionHolder(beanDef, beanName));
 			}
 		}
 
 		// Return immediately if no @Configuration classes were found
+		/**
+		 * 容器为空直接返回
+		 */
 		if (configCandidates.isEmpty()) {
 			return;
 		}
 
 		// Sort by previously determined @Order value, if applicable
+		/**
+		 * 对所有需要处理的 BeanDefinition排序
+		 */
 		configCandidates.sort((bd1, bd2) -> {
 			int i1 = ConfigurationClassUtils.getOrder(bd1.getBeanDefinition());
 			int i2 = ConfigurationClassUtils.getOrder(bd2.getBeanDefinition());
@@ -310,13 +336,23 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 
 		// Parse each @Configuration class
+		/**
+		 * 候选 BeanDefiniton 的解析器
+		 */
 		ConfigurationClassParser parser = new ConfigurationClassParser(
 				this.metadataReaderFactory, this.problemReporter, this.environment,
 				this.resourceLoader, this.componentScanBeanNameGenerator, registry);
 
 		Set<BeanDefinitionHolder> candidates = new LinkedHashSet<>(configCandidates);
+		/**
+		 * 已经解析过的类
+		 */
 		Set<ConfigurationClass> alreadyParsed = new HashSet<>(configCandidates.size());
 		do {
+			/**
+			 * 解析核心流程 重要程度5
+			 * 其实就是把类上面的特殊注解解析出来 封装成 BeanDefinition
+			 */
 			parser.parse(candidates);
 			parser.validate();
 

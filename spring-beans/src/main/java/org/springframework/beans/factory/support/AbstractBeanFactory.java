@@ -243,6 +243,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			String name, @Nullable Class<T> requiredType, @Nullable Object[] args, boolean typeCheckOnly)
 			throws BeansException {
 
+		/**
+		 * 转换名称
+		 */
 		String beanName = transformedBeanName(name);
 		Object bean;
 
@@ -362,11 +365,18 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							throw ex;
 						}
 					});
+					/**
+					 * 改方法是FactoryBean接口的调用入口
+					 */
 					bean = getObjectForBeanInstance(sharedInstance, name, beanName, mbd);
 				}
 
 				else if (mbd.isPrototype()) {
 					// It's a prototype -> create a new instance.
+					/**
+					 * 多例
+					 * 没有做缓存。每次一调都是新的实例
+					 */
 					Object prototypeInstance = null;
 					try {
 						beforePrototypeCreation(beanName);
@@ -388,6 +398,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 						throw new IllegalStateException("No Scope registered for scope name '" + scopeName + "'");
 					}
 					try {
+						/**
+						 * 在这里掉的 scope的get方法
+						 */
 						Object scopedInstance = scope.get(beanName, () -> {
 							beforePrototypeCreation(beanName);
 							try {
@@ -1821,6 +1834,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			Object beanInstance, String name, String beanName, @Nullable RootBeanDefinition mbd) {
 
 		// Don't let calling code try to dereference the factory if the bean isn't a factory.
+		/**
+		 * 判断是否有前缀
+		 */
 		if (BeanFactoryUtils.isFactoryDereference(name)) {
 			if (beanInstance instanceof NullBean) {
 				return beanInstance;
@@ -1837,15 +1853,27 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		// Now we have the bean instance, which may be a normal bean or a FactoryBean.
 		// If it's a FactoryBean, we use it to create a bean instance, unless the
 		// caller actually wants a reference to the factory.
+		/**
+		 * 如果实例不是FactoryBean类型的
+		 */
 		if (!(beanInstance instanceof FactoryBean)) {
 			return beanInstance;
 		}
 
+		/**
+		 *  如果代码能走下来的 则说beanName不是以&开头，并且beanInstance 是实现了FactryBean类型的
+		 */
 		Object object = null;
 		if (mbd != null) {
+			/**
+			 * 设置 beanDefinition
+			 */
 			mbd.isFactoryBean = true;
 		}
 		else {
+			/**
+			 * 从缓存中获取
+			 */
 			object = getCachedObjectForFactoryBean(beanName);
 		}
 		if (object == null) {
@@ -1856,6 +1884,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				mbd = getMergedLocalBeanDefinition(beanName);
 			}
 			boolean synthetic = (mbd != null && mbd.isSynthetic());
+			/**
+			 * 重点看
+			 */
 			object = getObjectFromFactoryBean(factory, beanName, !synthetic);
 		}
 		return object;
@@ -1906,6 +1937,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				// Register a DisposableBean implementation that performs all destruction
 				// work for the given bean: DestructionAwareBeanPostProcessors,
 				// DisposableBean interface, custom destroy method.
+				/**
+				 * 建立一个映射 ，beanName 和 用于bean销毁的实例 的一个映射
+				 */
 				registerDisposableBean(beanName,
 						new DisposableBeanAdapter(bean, beanName, mbd, getBeanPostProcessors(), acc));
 			}

@@ -46,19 +46,38 @@ import org.springframework.util.ClassUtils;
  * @see BeanMethod
  * @see ConfigurationClassParser
  */
+
+/**
+ * 一个 ConfigurationClass 对象 代表一个类
+ */
 final class ConfigurationClass {
 
+	/**
+	 * 类的基本元信息，包括注解、类、方法等信息
+	 */
 	private final AnnotationMetadata metadata;
 
+	/**
+	 * 类的 文件流封装
+	 */
 	private final Resource resource;
 
 	@Nullable
 	private String beanName;
 
+	/**
+	 * 外部类， 由某个类引入进来的
+	 */
 	private final Set<ConfigurationClass> importedBy = new LinkedHashSet<>(1);
 
+	/**
+	 * 如果有 @Bean的方法，则放到这个容器中
+	 */
 	private final Set<BeanMethod> beanMethods = new LinkedHashSet<>();
 
+	/**
+	 *
+	 */
 	private final Map<String, Class<? extends BeanDefinitionReader>> importedResources =
 			new LinkedHashMap<>();
 
