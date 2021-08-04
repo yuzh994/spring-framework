@@ -155,7 +155,13 @@ class ConfigurationClassBeanDefinitionReader {
 			loadBeanDefinitionsForBeanMethod(beanMethod);
 		}
 
+		/**
+		 * 走 xml解析
+		 */
 		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());
+		/**
+		 * 调用 ImportBeanDefinitionRegistrars的方法
+		 */
 		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars());
 	}
 
@@ -386,6 +392,9 @@ class ConfigurationClassBeanDefinitionReader {
 			}
 
 			// TODO SPR-6310: qualify relative path locations as done in AbstractContextLoader.modifyLocations
+			/**
+			 * 和 XML 解析 一样的逻辑
+			 */
 			reader.loadBeanDefinitions(resource);
 		});
 	}

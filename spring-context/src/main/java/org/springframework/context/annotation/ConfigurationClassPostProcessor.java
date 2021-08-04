@@ -267,7 +267,9 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			// Simply call processConfigurationClasses lazily at this point then.
 			processConfigBeanDefinitions((BeanDefinitionRegistry) beanFactory);
 		}
-
+		/**
+		 * CGLIB 代理
+		 */
 		enhanceConfigurationClasses(beanFactory);
 		beanFactory.addBeanPostProcessor(new ImportAwareBeanPostProcessor(beanFactory));
 	}
@@ -356,6 +358,9 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			 * 解析核心流程 重要程度5
 			 * 其实就是把类上面的特殊注解解析出来  封装成 beanDefinition
 			 * 放入configurationClasses容器
+			 *
+			 *
+			 * 解析@Import @PropertySource @ComponentScan @Bean ImportSelector接口完成调用
 			 */
 			parser.parse(candidates);
 			parser.validate();
@@ -373,7 +378,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 						this.importBeanNameGenerator, parser.getImportRegistry());
 			}
 			/**
-			 *  @Bean @ImportResource  ImportBeanDefinitionRegistrar 具体处理逻辑
+			 *  @Bean @Import 内部类 @ImportResource  ImportBeanDefinitionRegistrar 具体处理逻辑
 			 */
 			this.reader.loadBeanDefinitions(configClasses);
 			/**
@@ -382,6 +387,9 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			alreadyParsed.addAll(configClasses);
 
 			candidates.clear();
+			/**
+			 * 比较差异 又走一遍解析流程
+			 */
 			if (registry.getBeanDefinitionCount() > candidateNames.length) {
 				String[] newCandidateNames = registry.getBeanDefinitionNames();
 				Set<String> oldCandidateNames = new HashSet<>(Arrays.asList(candidateNames));
@@ -424,7 +432,13 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	public void enhanceConfigurationClasses(ConfigurableListableBeanFactory beanFactory) {
 		Map<String, AbstractBeanDefinition> configBeanDefs = new LinkedHashMap<>();
 		for (String beanName : beanFactory.getBeanDefinitionNames()) {
+			/**
+			 * 拿到所有 beanDefinition对象
+			 */
 			BeanDefinition beanDef = beanFactory.getBeanDefinition(beanName);
+			/**
+			 * 拿到对应的值
+			 */
 			Object configClassAttr = beanDef.getAttribute(ConfigurationClassUtils.CONFIGURATION_CLASS_ATTRIBUTE);
 			AnnotationMetadata annotationMetadata = null;
 			MethodMetadata methodMetadata = null;
@@ -453,6 +467,9 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 					}
 				}
 			}
+			/**
+			 * 如果有Configuration注解，就是完全匹配标识
+			 */
 			if (ConfigurationClassUtils.CONFIGURATION_CLASS_FULL.equals(configClassAttr)) {
 				if (!(beanDef instanceof AbstractBeanDefinition)) {
 					throw new BeanDefinitionStoreException("Cannot enhance @Configuration bean definition '" +
@@ -464,6 +481,9 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 							"is a non-static @Bean method with a BeanDefinitionRegistryPostProcessor " +
 							"return type: Consider declaring such methods as 'static'.");
 				}
+				/**
+				 * 需要增强的类
+				 */
 				configBeanDefs.put(beanName, (AbstractBeanDefinition) beanDef);
 			}
 		}
