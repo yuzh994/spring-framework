@@ -538,6 +538,9 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 			}
 		}
 		else {
+			/**
+			 * 通过getBean的方式获取依赖的bean
+			 */
 			resource = factory.getBean(name, element.lookupType);
 			autowiredBeanNames = Collections.singleton(name);
 		}

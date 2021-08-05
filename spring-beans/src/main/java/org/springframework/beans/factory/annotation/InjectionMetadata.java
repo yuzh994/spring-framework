@@ -37,8 +37,6 @@ import org.springframework.util.ReflectionUtils;
  * Not intended for direct use in applications.
  *
  * <p>Used by {@link AutowiredAnnotationBeanPostProcessor},
- * {@link org.springframework.context.annotation.CommonAnnotationBeanPostProcessor} and
- * {@link org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor}.
  *
  * @author Juergen Hoeller
  * @since 2.5
@@ -112,10 +110,16 @@ public class InjectionMetadata {
 
 	public void inject(Object target, @Nullable String beanName, @Nullable PropertyValues pvs) throws Throwable {
 		Collection<InjectedElement> checkedElements = this.checkedElements;
+		/**
+		 * 如果checkedElements为空，则取 injectedElements
+		 */
 		Collection<InjectedElement> elementsToIterate =
 				(checkedElements != null ? checkedElements : this.injectedElements);
 		if (!elementsToIterate.isEmpty()) {
 			for (InjectedElement element : elementsToIterate) {
+				/**
+				 * 进行属性注入
+				 */
 				element.inject(target, beanName, pvs);
 			}
 		}
@@ -223,6 +227,9 @@ public class InjectionMetadata {
 				throws Throwable {
 
 			if (this.isField) {
+				/**
+				 * 通过反射来实现
+				 */
 				Field field = (Field) this.member;
 				ReflectionUtils.makeAccessible(field);
 				field.set(target, getResourceToInject(target, requestingBeanName));
