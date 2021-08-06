@@ -404,10 +404,13 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
 		/**
-		 * 返回有注解的属性和方法
+		 * 再次获取了类中标注了@AutoWired、@Value、@Inject属性的信息
 		 */
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
 		try {
+			/**
+			 * 属性注入
+			 */
 			metadata.inject(bean, beanName, pvs);
 		}
 		catch (BeanCreationException ex) {
@@ -682,6 +685,9 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 			TypeConverter typeConverter = beanFactory.getTypeConverter();
 			Object value;
 			try {
+				/**
+				 * 先根据type进行匹配，当有多个type时，再根据name进行匹配，如果匹配不上则抛出异常 DependencyDescriptor desc： 被依赖注入bean的描述，beanName：外层bean
+				 */
 				value = beanFactory.resolveDependency(desc, beanName, autowiredBeanNames, typeConverter);
 			}
 			catch (BeansException ex) {

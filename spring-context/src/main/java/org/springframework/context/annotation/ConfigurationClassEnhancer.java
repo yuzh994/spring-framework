@@ -111,6 +111,9 @@ class ConfigurationClassEnhancer {
 			logger.trace(String.format("Successfully enhanced %s; enhanced class name is: %s",
 					configClass.getName(), enhancedClass.getName()));
 		}
+		/**
+		 * 返回 代理类 的类名， 最后还是由 spring来实例化
+		 */
 		return enhancedClass;
 	}
 
@@ -126,6 +129,7 @@ class ConfigurationClassEnhancer {
 		enhancer.setStrategy(new BeanFactoryAwareGeneratorStrategy(classLoader));
 		enhancer.setCallbackFilter(CALLBACK_FILTER);
 		enhancer.setCallbackTypes(CALLBACK_FILTER.getCallbackTypes());
+		//返回增强器
 		return enhancer;
 	}
 
@@ -328,9 +332,15 @@ class ConfigurationClassEnhancer {
 									"these container lifecycle issues; see @Bean javadoc for complete details.",
 							beanMethod.getDeclaringClass().getSimpleName(), beanMethod.getName()));
 				}
+				/**
+				 * 调用 代理方法
+				 */
 				return cglibMethodProxy.invokeSuper(enhancedConfigInstance, beanMethodArgs);
 			}
 
+			/**
+			 *
+			 */
 			return resolveBeanReference(beanMethod, beanMethodArgs, beanFactory, beanName);
 		}
 
@@ -358,6 +368,9 @@ class ConfigurationClassEnhancer {
 						}
 					}
 				}
+				/**
+				 * 核心代码
+				 */
 				Object beanInstance = (useArgs ? beanFactory.getBean(beanName, beanMethodArgs) :
 						beanFactory.getBean(beanName));
 				if (!ClassUtils.isAssignableValue(beanMethod.getReturnType(), beanInstance)) {
