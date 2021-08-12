@@ -24,7 +24,7 @@ public class DyAopTest {
 
 		log.info(String.format("代理对象，类名：%s",ProxyName));
 
-		
+
 		log.info("返回结果{}",result);
 
 	}
