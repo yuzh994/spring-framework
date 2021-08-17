@@ -458,9 +458,18 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			AutoProxyUtils.exposeTargetClass((ConfigurableListableBeanFactory) this.beanFactory, beanName, beanClass);
 		}
 
+		/**
+		 * 代理工厂
+		 */
 		ProxyFactory proxyFactory = new ProxyFactory();
+		/**
+		 * 把AnnotationAwareAspectJAutoProxyCreator中的某些属性copy到 proxyFactory中
+		 */
 		proxyFactory.copyFrom(this);
 
+		/**
+		 * 判断是否有接口
+		 */
 		if (!proxyFactory.isProxyTargetClass()) {
 			if (shouldProxyTargetClass(beanClass, beanName)) {
 				proxyFactory.setProxyTargetClass(true);
@@ -469,9 +478,18 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 				evaluateProxyInterfaces(beanClass, proxyFactory);
 			}
 		}
-
+		/**
+		 * 组装 Advisor
+		 */
 		Advisor[] advisors = buildAdvisors(beanName, specificInterceptors);
+
+		/**
+		 * 把 Advisor加入到代理工厂
+		 */
 		proxyFactory.addAdvisors(advisors);
+		/**
+		 * 把targetSource对象加入到proxyFactory
+		 */
 		proxyFactory.setTargetSource(targetSource);
 		customizeProxyFactory(proxyFactory);
 
@@ -479,7 +497,9 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (advisorsPreFiltered()) {
 			proxyFactory.setPreFiltered(true);
 		}
-
+		/**
+		 * 获取代理对象
+		 */
 		return proxyFactory.getProxy(getProxyClassLoader());
 	}
 
@@ -521,6 +541,9 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 */
 	protected Advisor[] buildAdvisors(@Nullable String beanName, @Nullable Object[] specificInterceptors) {
 		// Handle prototypes correctly...
+		/**
+		 * 设置自定义的 MenthodInterceptor 和 Advice
+		 */
 		Advisor[] commonInterceptors = resolveInterceptorNames();
 
 		List<Object> allInterceptors = new ArrayList<>();

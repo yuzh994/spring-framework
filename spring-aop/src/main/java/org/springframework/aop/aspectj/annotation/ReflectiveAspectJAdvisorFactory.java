@@ -186,6 +186,9 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 			}
 		}, ReflectionUtils.USER_DECLARED_METHODS);
 		if (methods.size() > 1) {
+			/**
+			 * 按照注解先后顺序排序+自然顺序排序
+			 */
 			methods.sort(METHOD_COMPARATOR);
 		}
 		return methods;
