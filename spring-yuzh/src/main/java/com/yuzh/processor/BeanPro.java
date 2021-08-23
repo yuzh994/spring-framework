@@ -20,7 +20,6 @@ public class BeanPro implements BeanDefinitionRegistryPostProcessor {
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		String s = JSON.toJSONString(beanFactory.getBeanDefinitionNames());
-
 		log.info(String.format("获取所有的有BeanDefinitionNames：%S",s));
 
 

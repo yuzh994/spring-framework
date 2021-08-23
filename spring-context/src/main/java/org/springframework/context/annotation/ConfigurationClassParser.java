@@ -196,6 +196,9 @@ class ConfigurationClassParser {
 			}
 		}
 
+		/**
+		 * deferredImportSelectors这里调
+		 */
 		this.deferredImportSelectorHandler.process();
 	}
 
@@ -343,6 +346,9 @@ class ConfigurationClassParser {
 					 * 判断是否是候选的 BeanDefinition，如果是 又parse
 					 */
 					if (ConfigurationClassUtils.checkConfigurationClassCandidate(bdCand, this.metadataReaderFactory)) {
+						/**
+						 * 递归
+						 */
 						parse(bdCand.getBeanClassName(), holder.getBeanName());
 					}
 				}
@@ -416,7 +422,7 @@ class ConfigurationClassParser {
 			List<SourceClass> candidates = new ArrayList<>(memberClasses.size());
 			for (SourceClass memberClass : memberClasses) {
 				/**
-				 * 如果是候选的
+				 * 如果是候选的 ，判断是否是合格的
 				 */
 				if (ConfigurationClassUtils.isConfigurationCandidate(memberClass.getMetadata()) &&
 						!memberClass.getMetadata().getClassName().equals(configClass.getMetadata().getClassName())) {
@@ -604,7 +610,7 @@ class ConfigurationClassParser {
 	 */
 	private Set<SourceClass> getImports(SourceClass sourceClass) throws IOException {
 		/**
-		 * 拿到 sourceClass 这个类上的 Imports 注解 里的value值 ，并且把导入的value值 又封装成 SourceClass 对象
+		 * 拿到 sourceClass 这个类上的 Import 注解 里的value值 ，并且把导入的value值 又封装成 SourceClass 对象
 		 */
 		Set<SourceClass> imports = new LinkedHashSet<>();
 		Set<SourceClass> visited = new LinkedHashSet<>();
@@ -1094,6 +1100,9 @@ class ConfigurationClassParser {
 
 		public ConfigurationClass asConfigClass(ConfigurationClass importedBy) {
 			if (this.source instanceof Class) {
+				/**
+				 * new 一个子类的 ConfigurationClass ，把子类的importedBy 设置为外部类
+				 */
 				return new ConfigurationClass((Class<?>) this.source, importedBy);
 			}
 			return new ConfigurationClass((MetadataReader) this.source, importedBy);

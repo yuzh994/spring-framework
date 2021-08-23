@@ -92,18 +92,18 @@ abstract class ConfigurationClassUtils {
 
 		AnnotationMetadata metadata;
 		/**
-		 * Èç¹ûÊÇÉ¨Ãè×¢½â²úÉúµÄBeanDefinition
+		 * å¦‚æœæ˜¯æ‰«ææ³¨è§£äº§ç”Ÿçš„BeanDefinition
 		 */
 		if (beanDef instanceof AnnotatedBeanDefinition &&
 				className.equals(((AnnotatedBeanDefinition) beanDef).getMetadata().getClassName())) {
 			// Can reuse the pre-parsed metadata from the given BeanDefinition...
 			/**
-			 * metadata ,ÀàµÄÔªÊı¾İĞÅÏ¢
+			 * metadata
 			 */
 			metadata = ((AnnotatedBeanDefinition) beanDef).getMetadata();
 		}
 		/**
-		 * Èç¹ûÊÇ·ÇÉ¨Ãè×¢½â²úÉúµÄBeanDefinition
+		 * éæ‰«ææ³¨è§£äº§ç”Ÿçš„BeanDefinition
 		 */
 		else if (beanDef instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) beanDef).hasBeanClass()) {
 			// Check already loaded Class if present...
@@ -132,19 +132,19 @@ abstract class ConfigurationClassUtils {
 		}
 
 		/**
-		 * ´Ó metadataÖĞ»ñÈ¡ Configuration×¢½â
+		 * æ ¹æ®metadata ç»™beanDefinitionæ‰“ä¸Šæ ‡è®°
 		 *
 		 */
 		Map<String, Object> config = metadata.getAnnotationAttributes(Configuration.class.getName());
 		if (config != null && !Boolean.FALSE.equals(config.get("proxyBeanMethods"))) {
 			/**
-			 * Èç¹ûÓĞ Configuration ×¢½â£¬¾ÍÊÇÍêÈ«Æ¥Åä±êÊ¶
+			 * åŒ…å«æœ‰ Configuration æ‰“ä¸Š full æ ‡å¿—
 			 */
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
 		}
 		else if (config != null || isConfigurationCandidate(metadata)) {
 			/**
-			 * Èç¹ûÓĞ@Componet @ComponetScan @Import @ImportResource »òÕß·½·¨ÉÏÓĞ@Bean ¶¼ÊÇliteÆ¥Åä
+			 * åŒ…å«æœ‰ @Componet @ComponetScan @Import @ImportResource @Bean æ³¨è§£æ‰“ä¸Šlite
 			 */
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
 		}

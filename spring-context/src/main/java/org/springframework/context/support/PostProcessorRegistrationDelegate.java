@@ -109,6 +109,9 @@ final class PostProcessorRegistrationDelegate {
 			 */
 			for (String ppName : postProcessorNames) {
 				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
+					/**
+					 * 实例化  postProcessBeanDefinitionRegistry
+					 */
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 					processedBeans.add(ppName);
 				}
@@ -116,7 +119,7 @@ final class PostProcessorRegistrationDelegate {
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
 			registryProcessors.addAll(currentRegistryProcessors);
 			/**
-			 * 调用 BeanDefinitionRegistryPostProcessors
+			 * 调用 postProcessBeanDefinitionRegistry
 			 */
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
 			currentRegistryProcessors.clear();
@@ -176,7 +179,7 @@ final class PostProcessorRegistrationDelegate {
 
 			// Now, invoke the postProcessBeanFactory callback of all processors handled so far.
 			/**
-			 * 调用 BeanDefinitionPostPocessors的 postProcessors 方法
+			 * 调用 BeanDefinitionPostPocessors的 postProcessBeanFactory 方法
 			 */
 			invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);
 			invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);

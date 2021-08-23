@@ -53,12 +53,12 @@ import org.springframework.util.ClassUtils;
 final class ConfigurationClass {
 
 	/**
-	 * ��Ļ���Ԫ��Ϣ������ע�⡢�ࡢ��������Ϣ
+	 * 类中的基本元信息 类、方法、注解等
 	 */
 	private final AnnotationMetadata metadata;
 
 	/**
-	 * ��� �ļ�����װ
+	 * 类的 流的一个封装
 	 */
 	private final Resource resource;
 
@@ -66,21 +66,24 @@ final class ConfigurationClass {
 	private String beanName;
 
 	/**
-	 * �ⲿ�࣬ ��ĳ�������������
+	 * 这个集合装当前这个类的外部类 ，由外部类把当前的类导入
 	 */
 	private final Set<ConfigurationClass> importedBy = new LinkedHashSet<>(1);
 
 	/**
-	 * ����� @Bean�ķ�������ŵ����������
+	 *如果由 @bean方法
 	 */
 	private final Set<BeanMethod> beanMethods = new LinkedHashSet<>();
 
 	/**
-	 *
+	 * 如果该类实现了 importedResources 接口
 	 */
 	private final Map<String, Class<? extends BeanDefinitionReader>> importedResources =
 			new LinkedHashMap<>();
 
+	/**
+	 * 如果该类实现了 ImportBeanDefinitionRegistrar 接口 则会放在这个容器中
+	 */
 	private final Map<ImportBeanDefinitionRegistrar, AnnotationMetadata> importBeanDefinitionRegistrars =
 			new LinkedHashMap<>();
 
@@ -138,6 +141,9 @@ final class ConfigurationClass {
 	public ConfigurationClass(Class<?> clazz, @Nullable ConfigurationClass importedBy) {
 		this.metadata = AnnotationMetadata.introspect(clazz);
 		this.resource = new DescriptiveResource(clazz.getName());
+		/**
+		 * 当前类 装的 外部类
+		 */
 		this.importedBy.add(importedBy);
 	}
 

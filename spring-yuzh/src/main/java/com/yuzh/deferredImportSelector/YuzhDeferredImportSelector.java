@@ -1,4 +1,4 @@
-package com.yuzh.selectimport;
+package com.yuzh.deferredImportSelector;
 
 import org.springframework.context.annotation.DeferredImportSelector;
 import org.springframework.core.type.AnnotationMetadata;
@@ -6,22 +6,21 @@ import org.springframework.core.type.AnnotationMetadata;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeferredImportSelectorDemo implements DeferredImportSelector {
-
+public class YuzhDeferredImportSelector implements DeferredImportSelector{
 
 	/**
 	 *返回一个 实现了 Group接口的类
 	 * @return
 	 */
 	@Override
-	public Class<? extends Group> getImportGroup() {
-		return DeferredImportSelectorGroupDemo.class;
+	public Class<? extends DeferredImportSelector.Group> getImportGroup() {
+		return YuzhDeferredImportSelector.DeferredImportSelectorGroupDemo.class;
 	}
 
 	@Override
 	public String[] selectImports(AnnotationMetadata importingClassMetadata) {
 		System.out.println("=================DeferredImportSelectorDemo.selectImports");
-		return new String[]{SelectImportBean.class.getName()};
+		return new String[]{YuzhSelectImport.class.getName()};
 	}
 
 	private static class DeferredImportSelectorGroupDemo implements DeferredImportSelector.Group{
@@ -44,7 +43,7 @@ public class DeferredImportSelectorDemo implements DeferredImportSelector {
 
 		@Override
 		public Iterable<Entry> selectImports() {
-			return null;
+			return list;
 		}
 	}
 }

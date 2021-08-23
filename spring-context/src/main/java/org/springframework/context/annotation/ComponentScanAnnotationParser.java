@@ -75,7 +75,7 @@ class ComponentScanAnnotationParser {
 
 	public Set<BeanDefinitionHolder> parse(AnnotationAttributes componentScan, final String declaringClass) {
 		/**
-		 * É¨ÃèÆ÷
+		 *  åˆ›å»ºæ‰«æå™¨
 		 */
 		ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(this.registry,
 				componentScan.getBoolean("useDefaultFilters"), this.environment, this.resourceLoader);
@@ -99,7 +99,7 @@ class ComponentScanAnnotationParser {
 		for (AnnotationAttributes filter : componentScan.getAnnotationArray("includeFilters")) {
 			for (TypeFilter typeFilter : typeFiltersFor(filter)) {
 				/**
-				 * ÉèÖÃ includeFilter
+				 * æ·»åŠ æ‰«ææ³¨è§£ includeFilter
 				 */
 				scanner.addIncludeFilter(typeFilter);
 			}
@@ -111,7 +111,7 @@ class ComponentScanAnnotationParser {
 		}
 
 		/**
-		 * ÊÇ·ñÀÁ¼ÓÔØ
+		 * æ˜¯å¦æ˜¯æ‡’åŠ è½½
 		 */
 		boolean lazyInit = componentScan.getBoolean("lazyInit");
 		if (lazyInit) {
@@ -119,7 +119,7 @@ class ComponentScanAnnotationParser {
 		}
 
 		/**
-		 * °üÂ·¾¶
+		 * æ‹¿åˆ°base basePackages
 		 */
 		Set<String> basePackages = new LinkedHashSet<>();
 		String[] basePackagesArray = componentScan.getStringArray("basePackages");
@@ -142,7 +142,7 @@ class ComponentScanAnnotationParser {
 			}
 		});
 		/**
-		 * É¨ÃèºËĞÄÁ÷³Ì
+		 * æ‰«ææ ¸å¿ƒæ–¹æ³• è¿”å›æ‰«æåˆ°çš„ BeanDefinitions
 		 */
 		return scanner.doScan(StringUtils.toStringArray(basePackages));
 	}
