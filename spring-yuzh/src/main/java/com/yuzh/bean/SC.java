@@ -1,7 +1,14 @@
 package com.yuzh.bean;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class SC {
+
+	private CQ cq;
+
+	public CQ getCq() {
+		return cq;
+	}
+
+	public void setCq(CQ cq) {
+		this.cq = cq;
+	}
 }
