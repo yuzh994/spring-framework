@@ -32,6 +32,7 @@ public class AnnotationApplication {
 	public void componentScanTest(){
 		AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext(InnerAppconfig.class);
 		InnerBeanDome bean = annotationConfigApplicationContext.getBean(InnerBeanDome.class);
+		InnerBeanDome bean2 = annotationConfigApplicationContext.getBean(InnerBeanDome.class);
 
 		log.info("==============="+JSON.toJSONString(annotationConfigApplicationContext.getBeanDefinitionNames()));
 	}

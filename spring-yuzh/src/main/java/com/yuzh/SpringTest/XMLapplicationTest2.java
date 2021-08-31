@@ -18,7 +18,7 @@ public class XMLapplicationTest2 {
 		//容器启动之后，添加 ApplicationLestenner
 		applicationContext.addApplicationListener(new EnjoyApplicationListener());
 
-		applicationContext.publishEvent(new EnjoyEvent(new Apple("123")));
+		applicationContext.publishEvent(new EnjoyEvent(new Apple()));
 		String[] beanDefinitionNames = applicationContext.getBeanDefinitionNames();
 		log.info("获取所有BeanDefinition"+ JSON.toJSONString(Arrays.stream(beanDefinitionNames).collect(Collectors.toList())));
 	}
