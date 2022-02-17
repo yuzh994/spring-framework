@@ -99,7 +99,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 				Object object = this.factoryBeanObjectCache.get(beanName);
 				if (object == null) {
 					/**
-					 * 调用 getObject方法
+					 *  getObject
 					 */
 					object = doGetObjectFromFactoryBean(factory, beanName);
 					// Only post-process and store if not put there already during getObject() call above
@@ -128,7 +128,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 						}
 						if (containsSingleton(beanName)) {
 							/**
-							 * 加入缓存 ，这个缓存存储的是 实现了 FactoryBean接口的 类个 getObject方法返回的实例
+							 *
 							 */
 							this.factoryBeanObjectCache.put(beanName, object);
 						}
@@ -173,7 +173,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 			}
 			else {
 				/**
-				 * 调用 getObject方法
+				 * 锟斤拷锟斤拷 getObject锟斤拷锟斤拷
 				 */
 				object = factory.getObject();
 			}

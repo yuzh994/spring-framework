@@ -485,6 +485,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Make sure bean class is actually resolved at this point, and
 		// clone the bean definition in case of a dynamically resolved Class
 		// which cannot be stored in the shared merged bean definition.
+		/**
+		 * 类加载
+		 */
 		Class<?> resolvedClass = resolveBeanClass(mbd, beanName);
 		if (resolvedClass != null && !mbd.hasBeanClass() && mbd.getBeanClassName() != null) {
 			mbdToUse = new RootBeanDefinition(mbd);
@@ -502,6 +505,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		try {
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
+			//
+			/**
+			 * *实例化前
+			 * *postProcessBeforeInstantiation()
+			 */
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) {
 				return bean;
@@ -559,6 +567,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (instanceWrapper == null) {
 			/**
 			 * 创建实例。核心方法createBeanInstance
+			 * *实例化
 			 */
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
@@ -578,6 +587,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					 * AutowiredAnnotationBeanPostProcessor  @Autowire @Value
 					 *
 					 * 对类注解 的装配过程
+					 *
+					 * *postProcessMergedBeanDefinition
 					 */
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
@@ -615,6 +626,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		try {
 			/**
 			 * IOC DI 依赖注入的核心方法
+			 * *populateBean
 			 *
 			 */
 			populateBean(beanName, mbd, instanceWrapper);
@@ -624,6 +636,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			 * 2.调用 @PostConStruct注解的方法，这里通过实现BeanPostProcesser接口完成该功能实现
 			 * 3.调用实现了Initializing接口的类中的 AfterPropertiesSet方法，调用 init-method中配置的方法
 			 * 4.代理类创建，用BeanPostProcesser接口来完成代理实例的创建
+			 *
 			 */
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
@@ -1455,6 +1468,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		/**
 		 *写一个接口 InstantiationAwareBeanPostProcessor ，postProcessAfterInstantiation()方法返回等于 true 才能往下走
 		 * 可以让所有类都不能依赖注入
+		 *
+		 * *实例化后
+		 * *postProcessAfterInstantiation
 		 */
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			for (BeanPostProcessor bp : getBeanPostProcessors()) {
@@ -1469,6 +1485,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : null);
 
+		/**
+		 * *自动注入
+		 */
 		int resolvedAutowireMode = mbd.getResolvedAutowireMode();
 		if (resolvedAutowireMode == AUTOWIRE_BY_NAME || resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
 			MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
@@ -1499,6 +1518,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
 					/**
 					 * 依赖注入过程，@Autowire 的支持 ，引用类型的依赖注入会触发 getBean操作
+					 * *postProcessProperties
 					 */
 					PropertyValues pvsToUse = ibp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);
 					if (pvsToUse == null) {
@@ -1876,6 +1896,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			 * 		  MessageSourceAware ApplicationContextAware
 			 *
 			 * ImportAwareBeanPostProcessor对InportAware的支撑
+			 * *初始化前
+			 * *postProcessBeforeInitialization
 			 */
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
@@ -1883,6 +1905,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		try {
 			/**
 			 * InitializingBean 接口，afterPropertiesSet ,init-method属性的调用
+			 * 初始化
 			 */
 			invokeInitMethods(beanName, wrappedBean, mbd);
 
@@ -1900,6 +1923,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (mbd == null || !mbd.isSynthetic()) {
 			/**
 			 *这个地方可能会生成代理实例，AOP的入口
+			 *
+			 * *初始化后
+			 * *postProcessAfterInitialization
 			 */
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
