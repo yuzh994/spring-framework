@@ -1170,6 +1170,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				if (targetType != null) {
 					bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);
 					if (bean != null) {
+						//如果实例化前返回对象，则直接进入初始化后
 						bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
 					}
 				}

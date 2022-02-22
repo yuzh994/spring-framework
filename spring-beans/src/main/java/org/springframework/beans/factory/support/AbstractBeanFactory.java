@@ -237,6 +237,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * not for actual use
 	 * @return an instance of the bean
 	 * @throws BeansException if the bean could not be created
+	 * *doGetBean
 	 */
 	@SuppressWarnings("unchecked")
 	protected <T> T doGetBean(
