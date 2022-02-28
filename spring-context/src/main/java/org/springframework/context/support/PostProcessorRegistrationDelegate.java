@@ -111,6 +111,9 @@ final class PostProcessorRegistrationDelegate {
 				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
 					/**
 					 * 实例化  postProcessBeanDefinitionRegistry
+					 *
+					 * *启动27 上一个方法找到所有	BeanDefinitionRegistryPostProcessor
+					 *  也就是ConfigurationClassPostProcessor ，在这里实例化
 					 */
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 					processedBeans.add(ppName);
@@ -120,6 +123,9 @@ final class PostProcessorRegistrationDelegate {
 			registryProcessors.addAll(currentRegistryProcessors);
 			/**
 			 * 调用 postProcessBeanDefinitionRegistry
+			 *
+			 * 启动28 执行ConfigurationClassPostProcessor 的postProcessBeanDefinitionRegistry方法
+			 *
 			 */
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
 			currentRegistryProcessors.clear();
@@ -180,6 +186,9 @@ final class PostProcessorRegistrationDelegate {
 			// Now, invoke the postProcessBeanFactory callback of all processors handled so far.
 			/**
 			 * 调用 BeanDefinitionPostPocessors的 postProcessBeanFactory 方法
+			 *
+			 *	*启动32 执行还没有执行过的postProcessBeanFactory
+			 *到此为止所有的 BeanFactoryPostProcessor的逻辑都执行完毕 ，主要是讲 BeanDefinition注册到BeanFactory中去
 			 */
 			invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);
 			invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);
@@ -342,6 +351,8 @@ final class PostProcessorRegistrationDelegate {
 		for (BeanDefinitionRegistryPostProcessor postProcessor : postProcessors) {
 			/**
 			 * 在这里调用 实现了BeanDefinitionRegistryPostProcessors接口的类的 postProcessBeanDefinitionRegistry方法
+			 *
+			 * *启动31 执行其他的 postProcessBeanDefinitionRegistry
 			 */
 			postProcessor.postProcessBeanDefinitionRegistry(registry);
 		}

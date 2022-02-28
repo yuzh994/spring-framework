@@ -151,9 +151,22 @@ public abstract class AnnotationConfigUtils {
 		DefaultListableBeanFactory beanFactory = unwrapDefaultListableBeanFactory(registry);
 		if (beanFactory != null) {
 			if (!(beanFactory.getDependencyComparator() instanceof AnnotationAwareOrderComparator)) {
+				/**
+				 * *启动3
+				 * 设置dependencyComparator
+				 *
+				 * 比较器 ，可以用来排序，获取 @Priority的值 ordered接口的值 @Order注解的值
+				 *
+				 */
 				beanFactory.setDependencyComparator(AnnotationAwareOrderComparator.INSTANCE);
 			}
 			if (!(beanFactory.getAutowireCandidateResolver() instanceof ContextAnnotationAutowireCandidateResolver)) {
+
+				/**
+				 * *启动4
+				 * 设置 autowireCandidateResolver
+				 * 自动注入候选解析器，用来判断某个Bean针对当前依赖是否能自动注入
+				 */
 				beanFactory.setAutowireCandidateResolver(new ContextAnnotationAutowireCandidateResolver());
 			}
 		}
@@ -163,6 +176,11 @@ public abstract class AnnotationConfigUtils {
 		if (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			/**
 			 * 这个类很重要 ConfigurationClassPostProcessor
+			 *
+			 * *启动5
+			 * 向BeanFactory加入ConfigurationClassPostProcessor对应的BeanDifinetion
+			 *
+			 * 解析配置类的 BeanPostProcessor
 			 */
 			RootBeanDefinition def = new RootBeanDefinition(ConfigurationClassPostProcessor.class);
 			def.setSource(source);
@@ -172,6 +190,9 @@ public abstract class AnnotationConfigUtils {
 		if (!registry.containsBeanDefinition(AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			/**
 			 * 这个类 很重要 AutowiredAnnotationBeanPostProcessor
+			 * *启动6
+			 * 向BeanFactory加入AutowiredAnnotationBeanPostProcessor对应的BeanDifinetion
+			 *解析@Autowired和@Value的BeanPostProcessor
 			 */
 			RootBeanDefinition def = new RootBeanDefinition(AutowiredAnnotationBeanPostProcessor.class);
 			def.setSource(source);
@@ -182,6 +203,8 @@ public abstract class AnnotationConfigUtils {
 		if (jsr250Present && !registry.containsBeanDefinition(COMMON_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			/**
 			 * 这个类很重要 CommonAnnotationBeanPostProcessor
+			 * *启动7
+			 * 向BeanFactory加入CommonAnnotationBeanPostProcessor对应的BeanDifinetion
 			 */
 			RootBeanDefinition def = new RootBeanDefinition(CommonAnnotationBeanPostProcessor.class);
 			def.setSource(source);
@@ -204,12 +227,26 @@ public abstract class AnnotationConfigUtils {
 		}
 
 		if (!registry.containsBeanDefinition(EVENT_LISTENER_PROCESSOR_BEAN_NAME)) {
+			/**
+			 * *启动8
+			 * 向BeanFactory加入EventListenerMethodProcessor对应的BeanDifinetion
+			 * 用来解析单例bean，被@EventListener注解了的方法
+			 */
 			RootBeanDefinition def = new RootBeanDefinition(EventListenerMethodProcessor.class);
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, EVENT_LISTENER_PROCESSOR_BEAN_NAME));
 		}
 
 		if (!registry.containsBeanDefinition(EVENT_LISTENER_FACTORY_BEAN_NAME)) {
+
+			/**
+			 *
+			 * *启动9
+			 * 向BeanFactory加入DefaultEventListenerFactory对应的BeanDifinetion
+			 *
+			 * 和上面一起使用 ，定义了如何把@EventListener 封装为ApplicationListener
+			 *
+			 */
 			RootBeanDefinition def = new RootBeanDefinition(DefaultEventListenerFactory.class);
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, EVENT_LISTENER_FACTORY_BEAN_NAME));

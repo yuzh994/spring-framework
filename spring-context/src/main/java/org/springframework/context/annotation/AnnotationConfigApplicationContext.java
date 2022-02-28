@@ -63,7 +63,18 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * through {@link #register} calls and then manually {@linkplain #refresh refreshed}.
 	 */
 	public AnnotationConfigApplicationContext() {
+		/**
+		 * *启动2
+		 * 构造AnnotatedBeanDefinitionReader
+		 */
 		this.reader = new AnnotatedBeanDefinitionReader(this);
+
+		/**
+		 * *启动10
+		 * 构造 ClassPathBeanDefinitionScanner
+		 * 构造过程中会把@Component 注解对应的AnnotationTypeFilter到 includeFilters中
+		 *
+		 */
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 
@@ -86,6 +97,10 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	public AnnotationConfigApplicationContext(Class<?>... componentClasses) {
 		this();
 		register(componentClasses);
+		/**
+		 * *启动12
+		 * 调用 refresh方法
+		 */
 		refresh();
 	}
 
@@ -159,6 +174,10 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	@Override
 	public void register(Class<?>... componentClasses) {
 		Assert.notEmpty(componentClasses, "At least one component class must be specified");
+		/**
+		 * *启动11
+		 *  利用 reader 注册Appconfig为BeanDefinition 类型为AnnotatedGenericBeanDefinition
+		 */
 		this.reader.register(componentClasses);
 	}
 

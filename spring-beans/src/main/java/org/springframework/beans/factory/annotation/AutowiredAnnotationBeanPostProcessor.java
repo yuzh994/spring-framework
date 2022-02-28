@@ -656,6 +656,11 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 			Field field = (Field) this.member;
 			Object value;
 			if (this.cached) {
+				/**
+				 * 对于原型Bean ，第一次创建的时候也是找注入点，然后进行注入，此时cache为false，注入完成之后cached为true
+				 * 第二次创建的时候，先找到注入点，此时拿到缓存好的注入点，也就是AutowiredFieldElement对象，此时cache为true
+				 * 注入点并没有缓存被注入的具体Bean对象，而是BeanName，这样能保证注入到不同的原型Bean对象
+				 */
 				try {
 					value = resolvedCachedArgument(beanName, this.cachedFieldValue);
 				}
@@ -703,6 +708,9 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 							String autowiredBeanName = autowiredBeanNames.iterator().next();
 							if (beanFactory.containsBean(autowiredBeanName) &&
 									beanFactory.isTypeMatch(autowiredBeanName, field.getType())) {
+								/**
+								 * 缓存
+								 */
 								cachedFieldValue = new ShortcutDependencyDescriptor(
 										desc, autowiredBeanName, field.getType());
 							}

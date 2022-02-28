@@ -8,6 +8,7 @@ import com.yuzh.bean.SC;
 import com.yuzh.beans.Dog;
 import com.yuzh.beans.Jack;
 import com.yuzh.beans.Rose;
+import com.yuzh.circuar.CircuarA;
 import com.yuzh.innerBean.InnerBeanDome;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -68,11 +69,9 @@ public class AnnotationApplication {
 	public void BeanTest() {
 		AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext(BeanConfig.class);
 
-		Jack jack = annotationConfigApplicationContext.getBean(Jack.class);
-		Rose rose = annotationConfigApplicationContext.getBean(Rose.class);
-		Dog dog = annotationConfigApplicationContext.getBean(Dog.class);
+		CircuarA bean = annotationConfigApplicationContext.getBean(CircuarA.class);
 
-		log.info("jack 的狗 :{},rose的狗:{},dog:{}",jack.getPet(),rose.getPet(),dog);
+		log.info("===============" + bean);
 	}
 
 

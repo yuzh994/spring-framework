@@ -361,6 +361,8 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			 *
 			 *
 			 * 解析@Import @PropertySource @ComponentScan @Bean ImportSelector接口完成调用
+			 *
+			 * *启动29 扫描得到BeanDefinition 并注册
 			 */
 			parser.parse(candidates);
 			parser.validate();
@@ -379,6 +381,8 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			}
 			/**
 			 *  @Bean @Import 内部类 @ImportResource  ImportBeanDefinitionRegistrar 具体处理逻辑
+			 *
+			 *  *启动30  @Bean @Import等注解得到的 BeanDefinition 并注册
 			 */
 			this.reader.loadBeanDefinitions(configClasses);
 			/**
