@@ -10,6 +10,9 @@ import com.yuzh.beans.Jack;
 import com.yuzh.beans.Rose;
 import com.yuzh.circuar.CircuarA;
 import com.yuzh.innerBean.InnerBeanDome;
+import com.yuzh.proxy.IOrderService;
+import com.yuzh.proxy.IUserService;
+import com.yuzh.proxy.UserService;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,5 +77,18 @@ public class AnnotationApplication {
 		log.info("===============" + bean);
 	}
 
+	@Test
+	public void aopTest() {
+		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(AopConfig.class);
 
+		IUserService userService = applicationContext.getBean(IUserService.class);
+		IOrderService orderService = applicationContext.getBean(IOrderService.class);
+
+		userService.test1();
+		userService.test2();
+
+		orderService.test1();
+		orderService.test2();;
+
+	}
 }

@@ -524,7 +524,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			// Prepare this context for refreshing.
 			/**
 			 *
-			 * *启动13 调用 prepareRefresh
+			 * *启动13
+			 * 调用 prepareRefresh
 			 *
 			 */
 			prepareRefresh();
@@ -587,7 +588,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Initialize message source for this context.
 				/**
-				 * *启动 34
+				 * *启动34
 				 * 如果BeanFactory中存在一个叫 messageSource 的BeanDefinition，那么把这个Bean对象创建出来，并
 				 * 赋值到 ApplicationContext的 messageSource属性上，让Application拥有国际化功能
 				 */
@@ -614,7 +615,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				/**
 				 * 往注册管理类中注册事件
 				 *
-				 * *启动37 从BeanFactory中获取 ApplicationListener类型的BeanName 并添加到
+				 * *启动37
+				 * 从BeanFactory中获取 ApplicationListener类型的BeanName 并添加到
 				 * 并添加到ApplicationContext 的事件广播器 applicationEventMulticaster中去
 				 *
 				 */
@@ -635,7 +637,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Last step: publish corresponding event.
 				/**
-				 *  *启动39 最后一步
+				 * *启动39
+				 *  最后一步
 				 */
 				finishRefresh();
 			}
@@ -746,7 +749,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		// Tell the internal bean factory to use the context's class loader etc.
 		/**
-		 * *启动18 设置BeanFactory 类加载器
+		 * *启动18
+		 * 设置BeanFactory 类加载器
 		 */
 		beanFactory.setBeanClassLoader(getClassLoader());
 		beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
@@ -791,7 +795,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// Register early post-processor for detecting inner beans as ApplicationListeners.
 		/**
-		 *  *启动23 添加一个Bean的后置处理器 ApplicationListenerDetector
+		 *  *启动23
+		 *  添加一个Bean的后置处理器 ApplicationListenerDetector
 		 *
 		 *  是一个Bean的后置处理器，检查某个Bean是否是一个 ApplicationListenner，如果是则添加到 ApplicationContext中去
 		 */
@@ -1043,19 +1048,22 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// Initialize lifecycle processor for this context.
 		/**
-		 * *启动40 设置 lifecycleProcessor
+		 * *启动40
+		 * 设置 lifecycleProcessor
 		 */
 		initLifecycleProcessor();
 
 		// Propagate refresh to lifecycle processor first.
 		/**
-		 * *启动41 执行 LifecycleBean
+		 * *启动41
+		 * 执行 LifecycleBean
 		 */
 		getLifecycleProcessor().onRefresh();
 
 		// Publish the final event.
 		/**
-		 * *启动42 发布ContextRefreshedEvent 事件
+		 * *启动42
+		 * 发布ContextRefreshedEvent 事件
 		 *
 		 * 刷新容器结束，发布 ContextRefreshedEvent事件
 		 */
