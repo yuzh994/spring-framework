@@ -5,6 +5,9 @@ import com.alibaba.fastjson.JSON;
 import com.yuzh.app.*;
 import com.yuzh.bean.Apple;
 import com.yuzh.bean.Pear;
+import com.yuzh.beans.MyDogs;
+import com.yuzh.factorybean.YzhBean;
+import com.yuzh.factorybean.YzhFactoryBean;
 import com.yuzh.innerBean.InnerBeanDome;
 import com.yuzh.proxy.IOrderService;
 import com.yuzh.proxy.IUserService;
@@ -12,6 +15,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 
@@ -30,8 +34,19 @@ public class AnnotationApplication {
 	@Test
 	public void componentScanTest(){
 		AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext(InnerAppconfig.class);
-		InnerBeanDome bean = annotationConfigApplicationContext.getBean(InnerBeanDome.class);
-		InnerBeanDome bean2 = annotationConfigApplicationContext.getBean(InnerBeanDome.class);
+		MyDogs bean = annotationConfigApplicationContext.getBean(MyDogs.class);
+
+		log.info("==============="+JSON.toJSONString(annotationConfigApplicationContext.getBeanDefinitionNames()));
+	}
+
+	@Test
+	public void factoryBeanTest(){
+		AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext(BeanFactortConfig.class);
+		Object yzhFactoryBean = annotationConfigApplicationContext.getBean("myFactoryBean");
+		Object yzhFactoryBean1 = annotationConfigApplicationContext.getBean("&myFactoryBean");
+		YzhBean bean = annotationConfigApplicationContext.getBean(YzhBean.class);
+		YzhFactoryBean bean1 = annotationConfigApplicationContext.getBean(YzhFactoryBean.class);
+
 
 		log.info("==============="+JSON.toJSONString(annotationConfigApplicationContext.getBeanDefinitionNames()));
 	}

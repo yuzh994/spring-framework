@@ -3,13 +3,13 @@ package com.yuzh.beans;
 
 public class Jack {
 	//宠物
-	private Dog pet;
+	private MyDogs pet;
 
-	public Dog getPet() {
+	public MyDogs getPet() {
 		return pet;
 	}
 
-	public void setPet(Dog pet) {
+	public void setPet(MyDogs pet) {
 		this.pet = pet;
 	}
 }

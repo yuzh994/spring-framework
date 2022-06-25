@@ -246,6 +246,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 		/**
 		 * 转换名称
+		 * name 有可能是 &xxx 或者是 &xxx ，如果那么是 &xxx，那么beanName就是xxx
+		 * name有可能传入进来的是别名，那么beanName就是ID
 		 */
 		String beanName = transformedBeanName(name);
 		Object bean;

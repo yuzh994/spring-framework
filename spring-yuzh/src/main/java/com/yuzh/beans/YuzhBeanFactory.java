@@ -1,11 +1,8 @@
 package com.yuzh.beans;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
-@Configuration
+//@Configuration
 //@Component
 public class YuzhBeanFactory {
 
@@ -24,7 +21,7 @@ public class YuzhBeanFactory {
 	}
 
 	@Bean
-	public Dog getDog() {
-		return new Dog();
+	public MyDogs getDog() {
+		return new MyDogs();
 	}
 }
