@@ -7,7 +7,7 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.stereotype.Controller;
 
 @Configuration
-@ComponentScan(value = "com.yuzh.beans")
+@ComponentScan(value = "com.yuzh.autowire")
 //@ComponentScan(value = "com.yuzh.innerBean",
 //		includeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION,
 //				value = {MyService.class})}, useDefaultFilters = false)

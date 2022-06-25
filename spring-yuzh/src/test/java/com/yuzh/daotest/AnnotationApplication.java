@@ -3,6 +3,7 @@ package com.yuzh.daotest;
 
 import com.alibaba.fastjson.JSON;
 import com.yuzh.app.*;
+import com.yuzh.autowire.OrderMain;
 import com.yuzh.bean.Apple;
 import com.yuzh.bean.Pear;
 import com.yuzh.beans.MyDogs;
@@ -49,6 +50,15 @@ public class AnnotationApplication {
 
 
 		log.info("==============="+JSON.toJSONString(annotationConfigApplicationContext.getBeanDefinitionNames()));
+	}
+
+	@Test
+	public void autoawireTest() {
+		AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext(InnerAppconfig.class);
+		OrderMain bean = annotationConfigApplicationContext.getBean(OrderMain.class);
+		bean.test();
+
+		log.info("===============" + annotationConfigApplicationContext);
 	}
 
 	@Test

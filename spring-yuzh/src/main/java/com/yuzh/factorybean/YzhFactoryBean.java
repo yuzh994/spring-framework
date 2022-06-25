@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 public class YzhFactoryBean implements FactoryBean<YzhBean> {
 
 	@Override
+
 	public YzhBean getObject() throws Exception {
 		return new YzhBean();
 	}

@@ -587,8 +587,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					 * AutowiredAnnotationBeanPostProcessor  @Autowire @Value
 					 *
 					 * 对类注解 的装配过程
+					 * 处理 合并之后的beanDefiniton
 					 *
-					 * *postProcessMergedBeanDefinition
+					 * postProcessMergedBeanDefinition
 					 */
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
