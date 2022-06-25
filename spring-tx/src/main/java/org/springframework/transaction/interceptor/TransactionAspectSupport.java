@@ -332,9 +332,19 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 
 		// If the transaction attribute is null, the method is non-transactional.
 		TransactionAttributeSource tas = getTransactionAttributeSource();
+		/**
+		 * 获取 @Transcation 注解的属性值
+		 */
 		final TransactionAttribute txAttr = (tas != null ? tas.getTransactionAttribute(method, targetClass) : null);
+
+		/**
+		 * 返回Spring容器中类型为 TransactionManager 的Bean对象 ，事务管理器
+		 */
 		final TransactionManager tm = determineTransactionManager(txAttr);
 
+		/**
+		 * 执行方式为响应式，一般不会走
+		 */
 		if (this.reactiveAdapterRegistry != null && tm instanceof ReactiveTransactionManager) {
 			ReactiveTransactionSupport txSupport = this.transactionSupportCache.computeIfAbsent(method, key -> {
 				if (KotlinDetector.isKotlinType(method.getDeclaringClass()) && KotlinDelegate.isSuspend(method)) {
@@ -353,11 +363,29 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 					method, targetClass, invocation, txAttr, (ReactiveTransactionManager) tm);
 		}
 
+		/**
+		 * 把这个事务管理器强转为 PlatformTransactionManager
+		 */
 		PlatformTransactionManager ptm = asPlatformTransactionManager(tm);
+
+		/**
+		 * joinpoint 的唯一标识，就是当前执行的方法名
+		 */
 		final String joinpointIdentification = methodIdentification(method, targetClass, txAttr);
 
+		/**
+		 * CallbackPreferringPlatformTransactionManager拥有回调功能的 TransactionManager ，不常用
+		 */
 		if (txAttr == null || !(ptm instanceof CallbackPreferringPlatformTransactionManager)) {
 			// Standard transaction demarcation with getTransaction and commit/rollback calls.
+
+			/**
+			 * *事务核心
+			 * 如果有必要就创建事务，这里涉及事务的传播机制
+			 *
+			 * TransactionInfo表示一个逻辑事务，比如一个逻辑事务属于同一个物理事务
+			 *
+			 */
 			TransactionInfo txInfo = createTransactionIfNecessary(ptm, txAttr, joinpointIdentification);
 
 			Object retVal;
@@ -368,6 +396,9 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 			}
 			catch (Throwable ex) {
 				// target invocation exception
+				/**
+				 * 抛了异常 ，则回滚事务，或者
+				 */
 				completeTransactionAfterThrowing(txInfo, ex);
 				throw ex;
 			}
@@ -382,7 +413,9 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 					retVal = VavrDelegate.evaluateTryFailure(retVal, txAttr, status);
 				}
 			}
-
+			/**
+			 * 提交事务
+			 */
 			commitTransactionAfterReturning(txInfo);
 			return retVal;
 		}
@@ -568,9 +601,15 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 			};
 		}
 
+		/**
+		 * 每个逻辑事务都会创建一个 TransactionStatus，但是TransactionStatus中有一个属性代表当前逻辑事务底层的物理事务是不是新的
+		 */
 		TransactionStatus status = null;
 		if (txAttr != null) {
 			if (tm != null) {
+				/**
+				 *开启事务
+				 */
 				status = tm.getTransaction(txAttr);
 			}
 			else {

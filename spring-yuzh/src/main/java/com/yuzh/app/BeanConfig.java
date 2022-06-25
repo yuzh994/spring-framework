@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @Configuration
-@ComponentScan("com.yuzh.circuar")
+@ComponentScan("com.yuzh.bean")
 @EnableAspectJAutoProxy
 public class BeanConfig {
 

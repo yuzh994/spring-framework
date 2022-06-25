@@ -3,16 +3,11 @@ package com.yuzh.daotest;
 
 import com.alibaba.fastjson.JSON;
 import com.yuzh.app.*;
-import com.yuzh.bean.CQ;
-import com.yuzh.bean.SC;
-import com.yuzh.beans.Dog;
-import com.yuzh.beans.Jack;
-import com.yuzh.beans.Rose;
-import com.yuzh.circuar.CircuarA;
+import com.yuzh.bean.Apple;
+import com.yuzh.bean.Pear;
 import com.yuzh.innerBean.InnerBeanDome;
 import com.yuzh.proxy.IOrderService;
 import com.yuzh.proxy.IUserService;
-import com.yuzh.proxy.UserService;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +67,11 @@ public class AnnotationApplication {
 	public void BeanTest() {
 		AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext(BeanConfig.class);
 
-		CircuarA bean = annotationConfigApplicationContext.getBean(CircuarA.class);
+
+		Pear bean = annotationConfigApplicationContext.getBean(Pear.class);
+		Apple bean1 = annotationConfigApplicationContext.getBean(Apple.class);
+		Apple bean2 = annotationConfigApplicationContext.getBean(Apple.class);
+		Pear bean3 = annotationConfigApplicationContext.getBean(Pear.class);
 
 		log.info("===============" + bean);
 	}
